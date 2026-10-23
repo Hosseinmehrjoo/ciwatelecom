@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   Activity, Clock, Headphones, LayoutDashboard, Layers, LifeBuoy, Menu, Mic2, Moon, Network,
-  Phone, PhoneCall, PhoneIncoming, PhoneOutgoing, Radio, Server, Settings, Shield, Sun, Users, X,
+  Megaphone, Phone, PhoneCall, PhoneIncoming, PhoneOutgoing, Radio, Server, Settings, Shield, Sun, Users, X,
 } from 'lucide-react'
 import { useTheme } from './theme/useTheme'
 import { DashboardView } from './views/DashboardView'
@@ -12,6 +12,7 @@ import {
   CdrView, LiveView, RecordingsView, ResourceView,
 } from './views/ResourceViews'
 import { CallsView, QueueMonitorView, SoftphoneView } from './views/OperativeViews'
+import { PromotionalCallsView } from './views/PromotionalCallsView'
 import {
   AdminView,   AmiSettingsView, DatabaseSettingsView, FirewallView, NetworkView, SettingsView, SipSettingsView, StatusView,
 } from './views/SystemViews'
@@ -29,6 +30,7 @@ const navItems = [
   { id: 'conferences', label: 'کنفرانس', icon: Mic2, group: 'pbx' },
   { id: 'voicemail', label: 'صندوق صوتی', icon: PhoneCall, group: 'pbx' },
   { id: 'moh', label: 'موزیک انتظار', icon: Headphones, group: 'pbx' },
+  { id: 'promo-calls', label: 'تماس تبلیغاتی', icon: Megaphone, group: 'marketing' },
   { id: 'calls', label: 'برقراری تماس', icon: PhoneCall, group: 'reports' },
   { id: 'softphone', label: 'Softphone', icon: Phone, group: 'reports' },
   { id: 'queue-live', label: 'صف زنده', icon: Users, group: 'reports' },
@@ -50,6 +52,7 @@ type Section = (typeof navItems)[number]['id']
 const groupLabel: Record<string, string> = {
   main: '',
   pbx: 'مرکز تلفن',
+  marketing: 'تماس تبلیغاتی',
   reports: 'گزارش و مانیتور',
   system: 'سیستم و هسته',
 }
@@ -81,7 +84,7 @@ function SidebarItem({
 function canAccess(item: (typeof navItems)[number] & { adminOnly?: boolean }, role: string | undefined) {
   if (item.adminOnly && role !== 'admin') return false
   if (role === 'viewer' && item.group === 'system' && item.id !== 'status') return false
-  if (role === 'viewer' && ['calls', 'softphone', 'queue-live'].includes(item.id)) return false
+  if (role === 'viewer' && ['calls', 'softphone', 'queue-live', 'promo-calls'].includes(item.id)) return false
   return true
 }
 
@@ -109,7 +112,7 @@ export default function App() {
     setNavOpen(false)
   }
 
-  const groups = ['main', 'pbx', 'reports', 'system']
+  const groups = ['main', 'pbx', 'marketing', 'reports', 'system']
   const role = user?.role
 
   if (loading) {
@@ -226,6 +229,7 @@ export default function App() {
           {section === 'conferences' && <ResourceView catalogKey="conferences" />}
           {section === 'voicemail' && <ResourceView catalogKey="voicemail" />}
           {section === 'moh' && <ResourceView catalogKey="moh" />}
+          {section === 'promo-calls' && <PromotionalCallsView />}
           {section === 'calls' && <CallsView />}
           {section === 'softphone' && <SoftphoneView />}
           {section === 'queue-live' && <QueueMonitorView />}

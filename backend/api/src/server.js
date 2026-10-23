@@ -66,6 +66,7 @@ import {
 import { applyEnvDatabaseBootstrap } from '../../services/store/databaseConfig.js'
 import { initDatastore } from '../../services/store/documentStore.js'
 import { initSessions } from '../../services/auth/sessions.js'
+import { registerCampaignRoutes } from '../../services/campaign/campaignApi.js'
 
 const app = express()
 const port = Number(process.env.CIWA_API_PORT || 8788)
@@ -372,6 +373,14 @@ app.post('/api/settings/database/use-file', requireMinRole('admin'), asyncHandle
   audit(req, 'settings.database_file_mode')
   res.json(result)
 }))
+
+registerCampaignRoutes(app, {
+  asyncHandler,
+  requireMinRole,
+  audit,
+  requireAuth,
+  enforceRouteRole,
+})
 
 for (const [route, key] of Object.entries(collections)) {
   app.get(`/api/${route}`, asyncHandler(async (_req, res) => {

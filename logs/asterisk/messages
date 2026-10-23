@@ -178,3 +178,93 @@
 [2026-10-01 21:46:56] ERROR[1] loader.c: app_amd declined to load.
 [2026-10-01 21:46:56] ERROR[1] loader.c: pbx_ael declined to load.
 [2026-10-01 21:46:56] ERROR[1] loader.c: res_prometheus declined to load.
+[2026-10-23 20:39:08] Asterisk GIT-master- built by root @ anatel on a x86_64 running Linux on 2026-10-01 21:29:29 UTC
+[2026-10-23 20:39:08] NOTICE[1] loader.c: 315 modules will be loaded.
+[2026-10-23 20:39:08] ERROR[1] res_config_sqlite3.c: Missing config file 'res_config_sqlite3.conf'
+[2026-10-23 20:39:08] ERROR[1] config_options.c: Unable to load config file 'statsd.conf'
+[2026-10-23 20:39:08] NOTICE[1] res_statsd.c: Could not load statsd config; using defaults
+[2026-10-23 20:39:08] WARNING[1] ccss.c: Could not find valid ccss.conf file. Using cc_max_requests and devstate defaults
+[2026-10-23 20:39:08] ERROR[1] config_options.c: Unable to load config file 'cdr.conf'
+[2026-10-23 20:39:08] NOTICE[1] cdr.c: Failed to process CDR configuration; using defaults
+[2026-10-23 20:39:08] NOTICE[1] cdr.c: CDR simple logging enabled.
+[2026-10-23 20:39:08] ERROR[1] config_options.c: Unable to load config file 'cel.conf'
+[2026-10-23 20:39:08] NOTICE[1] cel.c: Failed to process CEL configuration; using defaults
+[2026-10-23 20:39:08] ERROR[1] config_options.c: Unable to load config file 'features.conf'
+[2026-10-23 20:39:08] NOTICE[1] features_config.c: Could not load features config; using defaults
+[2026-10-23 20:39:08] WARNING[1] indications.c: Can't find indications config file indications.conf.
+[2026-10-23 20:39:08] ERROR[1] config_options.c: Unable to load config file 'acl.conf'
+[2026-10-23 20:39:08] ERROR[1] config_options.c: Unable to load config file 'udptl.conf'
+[2026-10-23 20:39:08] NOTICE[1] udptl.c: Could not load udptl config; using defaults
+[2026-10-23 20:39:08] ERROR[1] res_sorcery_config.c: Unable to load config file 'pjproject.conf'
+[2026-10-23 20:39:09] ERROR[1] res_pjsip_config_wizard.c: Unable to load config file 'pjsip_wizard.conf'
+[2026-10-23 20:39:09] ERROR[1] res_pjsip_config_wizard.c: Unable to load config file 'pjsip_wizard.conf'
+[2026-10-23 20:39:09] ERROR[1] res_pjsip_config_wizard.c: Unable to load config file 'pjsip_wizard.conf'
+[2026-10-23 20:39:09] ERROR[1] res_pjsip_config_wizard.c: Unable to load config file 'pjsip_wizard.conf'
+[2026-10-23 20:39:09] NOTICE[1] res_smdi.c: Unable to load config smdi.conf: SMDI disabled
+[2026-10-23 20:39:09] NOTICE[1] res_smdi.c: No SMDI interfaces are available to listen on, not starting SMDI listener.
+[2026-10-23 20:39:09] WARNING[1] res_stun_monitor.c: Unable to load config res_stun_monitor.conf
+[2026-10-23 20:39:09] ERROR[1] res_sorcery_config.c: Unable to load config file 'websocket_client.conf'
+[2026-10-23 20:39:09] ERROR[1] res_sorcery_config.c: Unable to load config file 'aeap.conf'
+[2026-10-23 20:39:09] ERROR[1] file.c: Error opening directory - /var/lib/asterisk/keys/keys: No such file or directory
+[2026-10-23 20:39:09] WARNING[1] res_crypto.c: Unable to open key directory '/var/lib/asterisk/keys/keys'
+[2026-10-23 20:39:09] ERROR[1] file.c: Error opening directory - /var/lib/asterisk/moh: No such file or directory
+[2026-10-23 20:39:09] WARNING[1] res_musiconhold.c: No music on hold classes configured, disabling music on hold.
+[2026-10-23 20:39:09] ERROR[1] res_phoneprov.c: Unable to load config phoneprov.conf
+[2026-10-23 20:39:09] ERROR[1] res_phoneprov.c: Unable to load provisioning profiles.
+[2026-10-23 20:39:09] ERROR[1] chan_iax2.c: Unable to load config iax.conf
+[2026-10-23 20:39:09] ERROR[1] res_sorcery_config.c: Unable to load config file 'chan_websocket.conf'
+[2026-10-23 20:39:09] ERROR[1] res_sorcery_config.c: Unable to load config file 'ari.conf'
+[2026-10-23 20:39:09] ERROR[1] res_sorcery_config.c: Unable to load config file 'ari.conf'
+[2026-10-23 20:39:09] ERROR[1] res_sorcery_config.c: Unable to load config file 'ari.conf'
+[2026-10-23 20:39:09] NOTICE[1] res_fax.c: Configuration file 'res_fax.conf' not found, using default options.
+[2026-10-23 20:39:09] ERROR[1] config_options.c: Unable to load config file 'hep.conf'
+[2026-10-23 20:39:09] ERROR[1] config_options.c: Unable to load config file 'pjsip_notify.conf'
+[2026-10-23 20:39:09] ERROR[1] res_pjsip_config_wizard.c: Unable to load config file 'pjsip_wizard.conf'
+[2026-10-23 20:39:09] ERROR[1] config_options.c: Unable to load config file 'agents.conf'
+[2026-10-23 20:39:09] ERROR[1] app_agent_pool.c: Unable to load config. Not loading module.
+[2026-10-23 20:39:09] NOTICE[1] confbridge/conf_config_parser.c: Adding default_bridge profile to app_confbridge
+[2026-10-23 20:39:09] NOTICE[1] confbridge/conf_config_parser.c: Adding default_user profile to app_confbridge
+[2026-10-23 20:39:09] NOTICE[1] confbridge/conf_config_parser.c: Adding default_menu menu to app_confbridge
+[2026-10-23 20:39:09] ERROR[1] res_calendar.c: Unable to load config calendar.conf
+[2026-10-23 20:39:09] ERROR[1] config_options.c: Unable to load config file 'res_parking.conf'
+[2026-10-23 20:39:09] WARNING[1] cdr_csv.c: unable to load config: cdr.conf
+[2026-10-23 20:39:09] WARNING[1] cdr_manager.c: Failed to load configuration file. Module not activated.
+[2026-10-23 20:39:09] WARNING[1] cel_manager.c: Failed to load configuration file. CEL manager Module not activated.
+[2026-10-23 20:39:09] ERROR[1] cdrel_custom/config.c: Unable to load cdr_custom.conf. Not logging CDRs to custom files
+[2026-10-23 20:39:09] ERROR[1] cdrel_custom/config.c: Unable to load cdr_sqlite3_custom.conf. Not logging CDRs to custom database
+[2026-10-23 20:39:09] ERROR[1] cdrel_custom/config.c: Unable to load cel_custom.conf. Not logging CELs to custom files
+[2026-10-23 20:39:09] ERROR[1] cdrel_custom/config.c: Unable to load cel_sqlite3_custom.conf. Not logging CELs to custom database
+[2026-10-23 20:39:09] ERROR[1] app_amd.c: Configuration file amd.conf missing.
+[2026-10-23 20:39:09] WARNING[1] app_festival.c: No such configuration file festival.conf
+[2026-10-23 20:39:09] WARNING[1] app_followme.c: No follow me config file (followme.conf), so no follow me
+[2026-10-23 20:39:09] WARNING[1] app_minivm.c: Failed to load configuration file. Module activated with default settings.
+[2026-10-23 20:39:09] ERROR[1] chan_unistim.c: Unable to load config unistim.conf
+[2026-10-23 20:39:09] ERROR[1] res_clialiases.c: res_clialiases configuration file 'cli_aliases.conf' not found
+[2026-10-23 20:39:09] ERROR[1] config_options.c: Unable to load config file 'prometheus.conf'
+[2026-10-23 20:39:09] NOTICE[1] pbx_ael.c: File /etc/asterisk/extensions.ael not found; AEL declining load
+[2026-10-23 20:39:09] NOTICE[1] app_queue.c: No queuerules.conf file found, queues will not follow penalty rules
+[2026-10-23 20:39:09] WARNING[1] loader.c: Some non-required modules failed to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: res_stun_monitor declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: res_phoneprov declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: Declined modules which depend on res_phoneprov: res_pjsip_phoneprov_provider
+[2026-10-23 20:39:09] ERROR[1] loader.c: chan_iax2 declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: res_hep declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: Declined modules which depend on res_hep: res_hep_rtcp, res_hep_pjsip
+[2026-10-23 20:39:09] ERROR[1] loader.c: res_pjsip_notify declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: app_agent_pool declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: res_calendar declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: res_parking declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: cdr_csv declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: cdr_manager declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: cel_manager declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: cdr_custom declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: cdr_sqlite3_custom declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: cel_custom declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: cel_sqlite3_custom declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: app_alarmreceiver declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: app_amd declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: app_festival declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: app_followme declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: chan_unistim declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: res_prometheus declined to load.
+[2026-10-23 20:39:09] ERROR[1] loader.c: pbx_ael declined to load.

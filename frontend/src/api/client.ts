@@ -105,6 +105,27 @@ export const api = {
   restoreBackup: (name: string) => request('/api/system/restore', { method: 'POST', body: JSON.stringify({ name }) }),
   exportJson: () => request<{ exported: string[] }>('/api/system/export-json', { method: 'POST' }),
 
+  exportPhoneNumbersCsv: () => '/api/exports/phone-numbers',
+  listCampaigns: () => request<{ items: any[] }>('/api/campaigns'),
+  createCampaign: (body: Record<string, unknown>) => request<{ campaign: any }>('/api/campaigns', { method: 'POST', body: JSON.stringify(body) }),
+  getCampaign: (id: string) => request<{ campaign: any; logs: any[] }>(`/api/campaigns/${id}`),
+  uploadCampaignFile: async (id: string, file: File) => {
+    const token = localStorage.getItem('ciwa_telecom_token')
+    const form = new FormData()
+    form.append('file', file)
+    const response = await fetch(`/api/campaigns/${id}/upload`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: form,
+    })
+    if (!response.ok) throw new ApiError(response.status, 'آپلود ناموفق')
+    return response.json() as Promise<{ campaign: any; count: number }>
+  },
+  startCampaign: (id: string) => request(`/api/campaigns/${id}/start`, { method: 'POST' }),
+  stopCampaign: (id: string) => request(`/api/campaigns/${id}/stop`, { method: 'POST' }),
+  pauseCampaign: (id: string) => request(`/api/campaigns/${id}/pause`, { method: 'POST' }),
+  campaignLogsCsvUrl: (id: string) => `/api/campaigns/${id}/logs.csv`,
+
   getDatabase: () => request<{ config: any; active: string; usingDatabase: boolean }>('/api/settings/database'),
   saveDatabase: (body: Record<string, unknown>) => request('/api/settings/database', { method: 'PUT', body: JSON.stringify(body) }),
   testDatabase: (body?: Record<string, unknown>) => request<{ ok: boolean; message?: string }>('/api/settings/database/test', { method: 'POST', body: JSON.stringify(body || {}) }),

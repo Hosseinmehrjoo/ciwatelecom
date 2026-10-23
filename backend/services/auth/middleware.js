@@ -53,6 +53,7 @@ export function methodRole(req) {
   if (path.startsWith('/api/settings/database')) return 'admin'
   if (path.startsWith('/api/auth/users')) return 'admin'
   if (path.startsWith('/api/calls/')) return 'operator'
+  if (path.startsWith('/api/campaigns') || path.startsWith('/api/exports/')) return 'operator'
   if (path.startsWith('/api/configs/')) return 'operator'
   if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH' || req.method === 'DELETE') return 'operator'
   return 'viewer'

@@ -1,0 +1,67 @@
+{
+  "hostname": "",
+  "dns": [],
+  "gateway": "",
+  "interfaces": [],
+  "firewall": {
+    "enabled": true,
+    "defaultIncoming": "drop",
+    "defaultOutgoing": "accept",
+    "rules": [
+      {
+        "id": "fw_ssh",
+        "enabled": true,
+        "action": "accept",
+        "protocol": "tcp",
+        "port": "22",
+        "source": "any",
+        "comment": "SSH"
+      },
+      {
+        "id": "fw_sip",
+        "enabled": true,
+        "action": "accept",
+        "protocol": "udp",
+        "port": "5060",
+        "source": "any",
+        "comment": "SIP"
+      },
+      {
+        "id": "fw_rtp",
+        "enabled": true,
+        "action": "accept",
+        "protocol": "udp",
+        "port": "10000-20000",
+        "source": "any",
+        "comment": "RTP"
+      },
+      {
+        "id": "fw_ami",
+        "enabled": true,
+        "action": "accept",
+        "protocol": "tcp",
+        "port": "5038",
+        "source": "127.0.0.1",
+        "comment": "AMI local"
+      },
+      {
+        "id": "fw_ui",
+        "enabled": true,
+        "action": "accept",
+        "protocol": "tcp",
+        "port": "5173",
+        "source": "any",
+        "comment": "CIWA UI"
+      },
+      {
+        "id": "fw_api",
+        "enabled": true,
+        "action": "accept",
+        "protocol": "tcp",
+        "port": "8788",
+        "source": "any",
+        "comment": "CIWA API"
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+# CIWA AMI bridge settings (copied into runtime by install scripts later).
+# Do not write secrets into core/asterisk.
+
+ami:
+  host: 127.0.0.1
+  port: 5038
+  username: ciwa
+
+ui:
+  language: fa
+  direction: rtl
+  theme: dark

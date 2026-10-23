@@ -1,0 +1,807 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-persian: 'Vazirmatn', system-ui, sans-serif;
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-100: #d1fae5;
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-navy-900: #0f172a;
+  --color-navy-800: #1e293b;
+  --color-navy-700: #334155;
+}
+
+* {
+  font-family: 'Vazirmatn', system-ui, sans-serif;
+  direction: rtl;
+}
+
+body {
+  background: #05060c;
+  color: #f5f7fb;
+  color-scheme: dark;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 42% 36% at 12% 8%, rgba(232, 121, 249, 0.42), transparent 62%),
+    radial-gradient(ellipse 36% 32% at 88% 12%, rgba(99, 102, 241, 0.38), transparent 60%),
+    radial-gradient(ellipse 40% 34% at 72% 92%, rgba(37, 99, 235, 0.42), transparent 64%),
+    radial-gradient(ellipse 28% 24% at 20% 80%, rgba(168, 85, 247, 0.22), transparent 70%),
+    #05060c;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.16) 0.6px, transparent 0.6px);
+  background-size: 18px 18px;
+  opacity: 0.18;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(196, 181, 253, 0.45);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(232, 121, 249, 0.65);
+}
+
+.glass-card,
+.glass-sidebar,
+.glass-bar,
+.glass-chip {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+    0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.glass-sidebar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(18, 16, 36, 0.42));
+}
+
+.glass-chip {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.glass-input,
+.vision-app input,
+.vision-app select,
+.vision-app textarea {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.vision-app input::placeholder,
+.vision-app textarea::placeholder {
+  color: #c5cada;
+}
+
+.vision-app input:focus,
+.vision-app select:focus,
+.vision-app textarea:focus,
+.glass-input:focus {
+  border-color: rgba(196, 181, 253, 0.9);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.28);
+}
+
+.vision-app .text-slate-800,
+.vision-app .text-slate-700,
+.vision-app .text-white {
+  color: #f8fafc;
+}
+
+.vision-app .text-slate-600,
+.vision-app .text-slate-500,
+.vision-app .text-slate-400,
+.vision-app .text-slate-300 {
+  color: #d5d8e4;
+}
+
+.vision-app .text-emerald-700,
+.vision-app .text-emerald-600,
+.vision-app .text-emerald-400 {
+  color: #ddd6fe;
+}
+
+.vision-app .bg-white,
+.vision-app .bg-slate-100,
+.vision-app .bg-slate-50,
+.vision-app .hover\:bg-white:hover,
+.vision-app .hover\:bg-slate-50:hover,
+.vision-app .hover\:bg-slate-100:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.vision-app .border-slate-200,
+.vision-app .border-slate-100,
+.vision-app .border-slate-50,
+.vision-app .border-white {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.vision-app .bg-emerald-600 {
+  background-color: #7c3aed;
+}
+
+.vision-app .text-red-700,
+.vision-app .text-red-800 {
+  color: #fecdd3;
+}
+
+.vision-app .bg-red-50 {
+  background-color: rgba(244, 63, 94, 0.16);
+}
+
+.vision-app .border-red-200,
+.vision-app .border-red-100 {
+  border-color: rgba(251, 113, 133, 0.4);
+}
+
+.vision-app table {
+  color: #f8fafc;
+}
+
+.brand-text {
+  background: linear-gradient(90deg, #e879f9, #a78bfa 40%, #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.quick-menu {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+html[data-theme="light"] .quick-menu {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(91, 33, 182, 0.16);
+}
+
+.nav-sub {
+  padding: 0.3rem;
+  border-radius: 16px;
+}
+
+.nav-flyout {
+  position: fixed;
+  z-index: 80;
+  width: 14rem;
+  overflow: auto;
+  padding: 0.4rem;
+  border-radius: 18px;
+  background: rgba(14, 10, 28, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 18px 42px rgba(0, 0, 0, 0.48);
+}
+
+html[data-theme="light"] .nav-flyout {
+  background: rgba(255, 252, 255, 0.98);
+  border-color: rgba(91, 33, 182, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 16px 36px rgba(49, 20, 90, 0.16);
+}
+
+.nav-flyout-title {
+  margin: 0.1rem 0.35rem 0.35rem;
+  padding: 0.4rem 0.45rem 0.55rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  color: #c4b5fd;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+html[data-theme="light"] .nav-flyout-title {
+  color: #6d28d9;
+  border-bottom-color: rgba(91, 33, 182, 0.16);
+}
+
+.quick-trigger {
+  color: #e9e4f5;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.quick-trigger:hover,
+.quick-trigger.active {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+html[data-theme="light"] .quick-trigger {
+  color: #4c1d95;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(91, 33, 182, 0.16);
+}
+
+.sidebar-item {
+  transition: background-color 0.22s ease, color 0.22s ease, translate 0.22s ease, scale 0.16s ease, box-shadow 0.22s ease;
+}
+.sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f5f3ff;
+  translate: -3px 0;
+}
+.sidebar-item:active {
+  translate: 0 0;
+  scale: 0.98;
+}
+.sidebar-item.active {
+  background: linear-gradient(135deg, rgba(232, 121, 249, 0.28), rgba(59, 130, 246, 0.22));
+  color: #ffffff;
+  border-right: 2px solid #e879f9;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #f0abfc, #8b5cf6 48%, #3b82f6);
+  color: white;
+  transition: all 0.18s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 8px 24px rgba(139, 92, 246, 0.35);
+}
+.btn-primary:hover {
+  translate: 0 -2px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 12px 28px rgba(59, 130, 246, 0.4);
+}
+.btn-primary:active {
+  translate: 0 0;
+  scale: 0.98;
+}
+
+.kpi-card {
+  transition: all 0.2s ease;
+}
+.kpi-card:hover {
+  translate: 0 -3px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 16px 40px rgba(99, 102, 241, 0.28);
+}
+.kpi-card:active {
+  translate: 0 0;
+  scale: 0.98;
+}
+
+.activity-item {
+  transition: background-color 0.2s ease, translate 0.2s ease;
+}
+.activity-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  translate: -3px 0;
+}
+
+.vision-app :where(button, a, summary, [role="button"]) {
+  transition: translate 0.22s ease, scale 0.16s ease, box-shadow 0.22s ease, background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease, opacity 0.22s ease;
+}
+.vision-app :where(button, a, summary, [role="button"]):hover:not(:disabled) {
+  translate: 0 -1px;
+}
+.vision-app :where(button, a, summary, [role="button"]):active:not(:disabled) {
+  translate: 0 0;
+  scale: 0.97;
+}
+
+.vision-app input,
+.vision-app select,
+.vision-app textarea,
+.glass-input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.vision-app main .glass-card,
+.vision-app main a.glass-card {
+  transition: translate 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease, background-color 0.24s ease;
+}
+.vision-app main .glass-card:hover:not(.theme-banner),
+.vision-app main a.glass-card:hover {
+  translate: 0 -3px;
+  border-color: rgba(167, 139, 250, 0.55);
+}
+
+.vision-app .btn-primary:hover {
+  translate: 0 -2px;
+}
+.vision-app .kpi-card:hover {
+  translate: 0 -3px;
+}
+.vision-app .btn-primary:active,
+.vision-app .kpi-card:active,
+.vision-app .sidebar-item:active {
+  translate: 0 0;
+  scale: 0.98;
+}
+.vision-app .sidebar-item:hover {
+  translate: -3px 0;
+}
+.vision-app .nav-parent:hover,
+.vision-app .nav-parent:active,
+.vision-app .quick-trigger:hover,
+.vision-app .quick-trigger:active {
+  translate: 0 0;
+  scale: 1;
+}
+.vision-app .phone-dock:hover {
+  translate: 0 0;
+  scale: 1.06;
+}
+.vision-app .phone-dock:active {
+  translate: 0 0;
+  scale: 0.94;
+}
+
+.vision-app tbody tr {
+  transition: background-color 0.2s ease;
+}
+.vision-app tbody tr:hover {
+  background-color: rgba(139, 92, 246, 0.12);
+}
+
+.phone-dock {
+  transition: scale 0.2s ease, box-shadow 0.2s ease;
+}
+.phone-dock:hover {
+  scale: 1.06;
+}
+.phone-dock:active {
+  scale: 0.94;
+}
+
+@keyframes ciwa-enter {
+  from { opacity: 0; translate: 0 12px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes ciwa-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ciwa-pop {
+  from { opacity: 0; scale: 0.96; }
+  to { opacity: 1; scale: 1; }
+}
+
+.glass-sidebar,
+.glass-bar,
+.sidebar-item {
+  animation: ciwa-fade 0.4s ease backwards;
+}
+
+.vision-app main .glass-card,
+.vision-app main .kpi-card,
+main.vision-app > form.glass-card,
+.vision-app.min-h-screen > .glass-card {
+  animation: ciwa-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.vision-app main .grid > :nth-child(2) { animation-delay: 0.04s; }
+.vision-app main .grid > :nth-child(3) { animation-delay: 0.08s; }
+.vision-app main .grid > :nth-child(4) { animation-delay: 0.12s; }
+.vision-app main .grid > :nth-child(5) { animation-delay: 0.16s; }
+.vision-app main .grid > :nth-child(6) { animation-delay: 0.2s; }
+.vision-app main .grid > :nth-child(n + 7) { animation-delay: 0.24s; }
+
+.vision-app main .flex-col > :nth-child(2) { animation-delay: 0.06s; }
+.vision-app main .flex-col > :nth-child(3) { animation-delay: 0.1s; }
+.vision-app main .flex-col > :nth-child(n + 4) { animation-delay: 0.14s; }
+
+.vision-app tbody tr {
+  animation: ciwa-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.vision-app tbody tr:nth-child(2) { animation-delay: 0.03s; }
+.vision-app tbody tr:nth-child(3) { animation-delay: 0.06s; }
+.vision-app tbody tr:nth-child(4) { animation-delay: 0.09s; }
+.vision-app tbody tr:nth-child(5) { animation-delay: 0.12s; }
+.vision-app tbody tr:nth-child(n + 6) { animation-delay: 0.15s; }
+
+.vision-app .glass-card.fixed,
+.phone-dock:not(.phone-dock-ring) {
+  animation: ciwa-pop 0.32s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.vision-app .glass-card.fixed:hover {
+  translate: 0 0;
+}
+
+dialog.crm-dialog[open] {
+  animation: ciwa-pop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+dialog.crm-dialog[open]::backdrop {
+  animation: ciwa-fade 0.24s ease;
+}
+
+@keyframes shimmer {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.hero-blob {
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+.dashboard-analytics {
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px) minmax(220px, 280px);
+}
+
+@media (max-width: 1100px) {
+  .dashboard-analytics {
+    grid-template-columns: 1fr;
+  }
+}
+
+dialog.crm-dialog {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  width: min(36rem, calc(100% - 2rem));
+  max-width: min(36rem, calc(100% - 2rem));
+  max-height: calc(100vh - 2rem);
+}
+
+.crm-dialog::backdrop {
+  background: rgba(5, 6, 12, 0.55);
+  backdrop-filter: blur(8px);
+}
+
+@keyframes ciwa-phone-ring {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(-14deg); }
+  30% { transform: rotate(12deg); }
+  45% { transform: rotate(-8deg); }
+  60% { transform: rotate(6deg); }
+}
+
+.phone-dock-ring {
+  animation: ciwa-phone-ring 0.9s ease-in-out infinite;
+}
+
+@keyframes ciwa-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ciwa-spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: conic-gradient(from 0deg, transparent 0 28%, #f0abfc, #8b5cf6 62%, #3b82f6);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0);
+  animation: ciwa-spin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+.ciwa-spinner-lg {
+  width: 3.25rem;
+  height: 3.25rem;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 0);
+}
+
+.ciwa-busy {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  z-index: 70;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-blob,
+  .btn-primary,
+  .kpi-card,
+  .sidebar-item,
+  .activity-item,
+  .phone-dock,
+  .phone-dock-ring,
+  .ciwa-spinner,
+  .glass-card,
+  .glass-bar,
+  .glass-sidebar,
+  .vision-app tbody tr,
+  dialog.crm-dialog,
+  dialog.crm-dialog::backdrop {
+    animation: none;
+    transition: none;
+  }
+}
+
+:root {
+  --ciwa-chart: #d6d8e4;
+  --ciwa-tooltip-bg: rgba(12, 14, 24, 0.88);
+  --ciwa-tooltip-border: rgba(255, 255, 255, 0.18);
+  --ciwa-text: #f8fafc;
+}
+
+html[data-theme="light"] {
+  --ciwa-chart: #3f3658;
+  --ciwa-tooltip-bg: rgba(255, 255, 255, 0.94);
+  --ciwa-tooltip-border: rgba(99, 70, 160, 0.18);
+  --ciwa-text: #1c1730;
+}
+
+html[data-theme="light"] body {
+  background: #f4f0fb;
+  color: #1c1730;
+  color-scheme: light;
+}
+
+html[data-theme="light"] body::before {
+  background:
+    radial-gradient(ellipse 42% 36% at 12% 8%, rgba(232, 121, 249, 0.28), transparent 62%),
+    radial-gradient(ellipse 36% 32% at 88% 12%, rgba(99, 102, 241, 0.22), transparent 60%),
+    radial-gradient(ellipse 40% 34% at 72% 92%, rgba(37, 99, 235, 0.2), transparent 64%),
+    #f7f4fc;
+}
+
+html[data-theme="light"] body::after {
+  opacity: 0.12;
+  background-image: radial-gradient(rgba(76, 49, 120, 0.28) 0.6px, transparent 0.6px);
+}
+
+html[data-theme="light"] .glass-card,
+html[data-theme="light"] .glass-sidebar,
+html[data-theme="light"] .glass-bar,
+html[data-theme="light"] .glass-chip {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.58));
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 16px 40px rgba(76, 49, 120, 0.12);
+}
+
+html[data-theme="light"] .glass-sidebar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(244, 240, 252, 0.62));
+}
+
+html[data-theme="light"] .glass-input,
+html[data-theme="light"] .vision-app input,
+html[data-theme="light"] .vision-app select,
+html[data-theme="light"] .vision-app textarea {
+  background: rgba(255, 255, 255, 0.88);
+  color: #1c1730;
+  border-color: rgba(76, 49, 120, 0.16);
+}
+
+html[data-theme="light"] .vision-app input::placeholder,
+html[data-theme="light"] .vision-app textarea::placeholder {
+  color: #5c5670;
+}
+
+html[data-theme="light"] .vision-app .text-slate-800,
+html[data-theme="light"] .vision-app .text-slate-700 {
+  color: #1c1730;
+}
+
+html[data-theme="light"] .vision-app .text-slate-600,
+html[data-theme="light"] .vision-app .text-slate-500,
+html[data-theme="light"] .vision-app .text-slate-400,
+html[data-theme="light"] .vision-app .text-slate-300 {
+  color: #4c4563;
+}
+
+html[data-theme="light"] .vision-app .text-emerald-700,
+html[data-theme="light"] .vision-app .text-emerald-600,
+html[data-theme="light"] .vision-app .text-emerald-400 {
+  color: #6d28d9;
+}
+
+html[data-theme="light"] .vision-app .bg-white,
+html[data-theme="light"] .vision-app .bg-slate-100,
+html[data-theme="light"] .vision-app .bg-slate-50,
+html[data-theme="light"] .vision-app .hover\:bg-white:hover,
+html[data-theme="light"] .vision-app .hover\:bg-slate-50:hover,
+html[data-theme="light"] .vision-app .hover\:bg-slate-100:hover {
+  background-color: rgba(255, 255, 255, 0.72);
+}
+
+html[data-theme="light"] .vision-app .border-slate-200,
+html[data-theme="light"] .vision-app .border-slate-100,
+html[data-theme="light"] .vision-app .border-slate-50 {
+  border-color: rgba(76, 49, 120, 0.14);
+}
+
+html[data-theme="light"] .vision-app .text-red-700,
+html[data-theme="light"] .vision-app .text-red-800 {
+  color: #9f1239;
+}
+
+html[data-theme="light"] .vision-app .bg-red-50 {
+  background-color: rgba(254, 226, 226, 0.92);
+}
+
+html[data-theme="light"] .vision-app table {
+  color: #1c1730;
+}
+
+html[data-theme="light"] .sidebar-item:hover {
+  color: #5b21b6;
+}
+
+html[data-theme="light"] .sidebar-item.active {
+  background: linear-gradient(135deg, #a21caf, #4f46e5 55%, #2563eb);
+  color: #ffffff;
+  border-right-color: #f0abfc;
+}
+
+html[data-theme="light"] .btn-primary {
+  color: #ffffff;
+}
+
+.vision-app .bg-white\/10,
+.vision-app .bg-white\/15,
+.vision-app .hover\:bg-white\/10:hover,
+.vision-app .hover\:bg-white\/15:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.vision-app .bg-white\/40,
+.vision-app .bg-white\/50,
+.vision-app .bg-white\/70,
+.vision-app .hover\:bg-white\/40:hover,
+.vision-app .hover\:bg-white\/70:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.vision-app .text-slate-100,
+.vision-app .text-slate-200,
+.vision-app .text-violet-200,
+.vision-app .text-violet-600,
+.vision-app .text-violet-700 {
+  color: #ddd6fe;
+}
+
+.vision-app .text-rose-500,
+.vision-app .text-rose-600 {
+  color: #fecdd3;
+}
+
+.vision-app .text-emerald-500 {
+  color: #a7f3d0;
+}
+
+.vision-app .text-sky-500 {
+  color: #bae6fd;
+}
+
+.vision-app .text-amber-700,
+.vision-app .text-amber-800 {
+  color: #fde68a;
+}
+
+.vision-app .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.18);
+}
+
+.vision-app select option {
+  color: #1c1730;
+  background-color: #ffffff;
+}
+
+.ciwa-accent {
+  color: #ddd6fe;
+}
+
+.glass-card.theme-banner,
+.theme-banner {
+  background: linear-gradient(135deg, rgba(232, 121, 249, 0.5), rgba(79, 70, 229, 0.42) 52%, rgba(37, 99, 235, 0.5));
+}
+
+html[data-theme="light"] .vision-app .bg-white\/10,
+html[data-theme="light"] .vision-app .hover\:bg-white\/10:hover,
+html[data-theme="light"] .vision-app .hover\:bg-white\/15:hover {
+  background-color: rgba(76, 49, 120, 0.08);
+}
+
+html[data-theme="light"] .vision-app .bg-white\/15 {
+  background-color: rgba(76, 49, 120, 0.12);
+}
+
+html[data-theme="light"] .vision-app .bg-white\/40,
+html[data-theme="light"] .vision-app .bg-white\/50,
+html[data-theme="light"] .vision-app .bg-white\/70,
+html[data-theme="light"] .vision-app .hover\:bg-white\/40:hover,
+html[data-theme="light"] .vision-app .hover\:bg-white\/70:hover {
+  background-color: rgba(255, 255, 255, 0.78);
+}
+
+html[data-theme="light"] .vision-app .text-slate-100,
+html[data-theme="light"] .vision-app .text-slate-200 {
+  color: #3f3658;
+}
+
+html[data-theme="light"] .vision-app .text-violet-200,
+html[data-theme="light"] .vision-app .text-violet-600,
+html[data-theme="light"] .vision-app .text-violet-700 {
+  color: #6d28d9;
+}
+
+html[data-theme="light"] .vision-app .text-rose-500,
+html[data-theme="light"] .vision-app .text-rose-600 {
+  color: #9f1239;
+}
+
+html[data-theme="light"] .vision-app .text-emerald-500 {
+  color: #047857;
+}
+
+html[data-theme="light"] .vision-app .text-sky-500 {
+  color: #0369a1;
+}
+
+html[data-theme="light"] .vision-app .text-amber-700,
+html[data-theme="light"] .vision-app .text-amber-800 {
+  color: #92400e;
+}
+
+html[data-theme="light"] .vision-app .bg-amber-50 {
+  background-color: rgba(254, 243, 199, 0.95);
+}
+
+html[data-theme="light"] .ciwa-accent {
+  color: #6d28d9;
+}
+
+html[data-theme="light"] .glass-card.theme-banner,
+html[data-theme="light"] .theme-banner {
+  background: linear-gradient(135deg, #a21caf, #4f46e5 52%, #1d4ed8);
+}
+
+html[data-theme="light"] .theme-banner,
+html[data-theme="light"] .theme-banner .text-white,
+html[data-theme="light"] .theme-banner .text-white\/80,
+html[data-theme="light"] .theme-banner .text-white\/90 {
+  color: #ffffff;
+}
+
+html[data-theme="light"] .theme-banner select {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+}

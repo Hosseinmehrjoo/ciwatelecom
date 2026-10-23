@@ -1,0 +1,59 @@
+{
+  "extensions": [
+    {
+      "ringTimeout": 30,
+      "voicemail": true,
+      "maxContacts": 3,
+      "number": "101",
+      "name": "اپراتور CRM",
+      "secret": "101",
+      "id": "101",
+      "updatedAt": "2026-10-01T21:11:11.857Z",
+      "createdAt": "2026-10-01T21:11:11.857Z"
+    },
+    {
+      "ringTimeout": 30,
+      "voicemail": true,
+      "maxContacts": 3,
+      "number": "102",
+      "name": "پشتیبانی",
+      "secret": "102",
+      "id": "102",
+      "updatedAt": "2026-10-01T21:26:00.000Z",
+      "createdAt": "2026-10-01T21:26:00.000Z"
+    }
+  ],
+  "trunks": [],
+  "inboundRoutes": [],
+  "outboundRoutes": [],
+  "queues": [],
+  "ivrs": [],
+  "ringGroups": [],
+  "timeConditions": [],
+  "conferences": [],
+  "voicemailBoxes": [],
+  "mohClasses": [],
+  "sip": {
+    "udpEnabled": true,
+    "tcpEnabled": false,
+    "wssEnabled": true,
+    "bindIp": "0.0.0.0",
+    "sipPort": 5060,
+    "tlsPort": 5061,
+    "wssPort": 8089,
+    "rtpStart": 10000,
+    "rtpEnd": 20000,
+    "externalIp": "",
+    "localNets": [
+      "192.168.0.0/16",
+      "10.0.0.0/8"
+    ]
+  },
+  "ami": {
+    "enabled": true,
+    "bindIp": "127.0.0.1",
+    "port": 5038,
+    "username": "ciwa",
+    "secret": "ciwa"
+  }
+}

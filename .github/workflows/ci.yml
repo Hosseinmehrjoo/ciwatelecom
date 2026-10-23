@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            backend/api/package-lock.json
+      - name: Install API deps
+        run: npm ci
+        working-directory: backend/api
+      - name: Install frontend deps
+        run: npm ci
+        working-directory: frontend
+      - name: API smoke tests
+        run: npm test
+        working-directory: backend/api
+        env:
+          CIWA_DISABLE_AUTH: '1'
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend

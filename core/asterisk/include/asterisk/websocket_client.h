@@ -1,0 +1,192 @@
+/*
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Copyright (C) 2025, Sangoma Technologies Corporation
+ *
+ * George Joseph <gjoseph@sangoma.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ */
+
+#ifndef _RES_WEBSOCKET_CLIENT_H
+#define _RES_WEBSOCKET_CLIENT_H
+
+#include "asterisk/http_websocket.h"
+#include "asterisk/sorcery.h"
+
+/*
+ * Using 1ULL is important as it forces the enum to be 64 bits.
+ */
+enum ast_ws_client_fields {
+	AST_WS_CLIENT_FIELD_NONE =                   0,
+	AST_WS_CLIENT_FIELD_URI =                    (1ULL << 0),
+	AST_WS_CLIENT_FIELD_PROTOCOLS =              (1ULL << 1),
+	AST_WS_CLIENT_FIELD_USERNAME =               (1ULL << 3),
+	AST_WS_CLIENT_FIELD_PASSWORD =               (1ULL << 4),
+	AST_WS_CLIENT_FIELD_TLS_ENABLED =            (1ULL << 7),
+	AST_WS_CLIENT_FIELD_CA_LIST_FILE =           (1ULL << 8),
+	AST_WS_CLIENT_FIELD_CA_LIST_PATH =           (1ULL << 9),
+	AST_WS_CLIENT_FIELD_CERT_FILE =              (1ULL << 10),
+	AST_WS_CLIENT_FIELD_PRIV_KEY_FILE =          (1ULL << 11),
+	AST_WS_CLIENT_FIELD_CONNECTION_TYPE =        (1ULL << 13),
+	AST_WS_CLIENT_FIELD_RECONNECT_INTERVAL =     (1ULL << 14),
+	AST_WS_CLIENT_FIELD_RECONNECT_ATTEMPTS =     (1ULL << 15),
+	AST_WS_CLIENT_FIELD_CONNECTION_TIMEOUT =     (1ULL << 16),
+	AST_WS_CLIENT_FIELD_VERIFY_SERVER_CERT =     (1ULL << 17),
+	AST_WS_CLIENT_FIELD_VERIFY_SERVER_HOSTNAME = (1ULL << 18),
+	AST_WS_CLIENT_FIELD_PROXY_HOST =             (1ULL << 19),
+	AST_WS_CLIENT_FIELD_PROXY_USERNAME =         (1ULL << 20),
+	AST_WS_CLIENT_FIELD_PROXY_PASSWORD =         (1ULL << 21),
+	AST_WS_CLIENT_FIELD_TCP_KEEPALIVES =         (1ULL << 22),
+	AST_WS_CLIENT_FIELD_TCP_KEEPALIVE_TIME =     (1ULL << 23),
+	AST_WS_CLIENT_FIELD_TCP_KEEPALIVE_INTERVAL = (1ULL << 24),
+	AST_WS_CLIENT_FIELD_TCP_KEEPALIVE_PROBES =   (1ULL << 25),
+	AST_WS_CLIENT_FIELD_PINGPONGS =              (1ULL << 26),
+	AST_WS_CLIENT_FIELD_PINGPONG_INTERVAL =      (1ULL << 27),
+	AST_WS_CLIENT_FIELD_PINGPONG_PROBES =        (1ULL << 28),
+	AST_WS_CLIENT_FIELD_WRITE_TIMEOUT =          (1ULL << 29),
+	AST_WS_CLIENT_NEEDS_RECONNECT = AST_WS_CLIENT_FIELD_URI | AST_WS_CLIENT_FIELD_PROTOCOLS
+		| AST_WS_CLIENT_FIELD_CONNECTION_TYPE
+		| AST_WS_CLIENT_FIELD_USERNAME | AST_WS_CLIENT_FIELD_PASSWORD
+		| AST_WS_CLIENT_FIELD_TLS_ENABLED | AST_WS_CLIENT_FIELD_CA_LIST_FILE
+		| AST_WS_CLIENT_FIELD_CA_LIST_PATH | AST_WS_CLIENT_FIELD_CERT_FILE
+		| AST_WS_CLIENT_FIELD_PRIV_KEY_FILE | AST_WS_CLIENT_FIELD_VERIFY_SERVER_CERT
+		| AST_WS_CLIENT_FIELD_VERIFY_SERVER_HOSTNAME
+		| AST_WS_CLIENT_FIELD_PROXY_HOST | AST_WS_CLIENT_FIELD_PROXY_USERNAME
+		| AST_WS_CLIENT_FIELD_PROXY_PASSWORD
+		| AST_WS_CLIENT_FIELD_TCP_KEEPALIVES
+		| AST_WS_CLIENT_FIELD_TCP_KEEPALIVE_TIME | AST_WS_CLIENT_FIELD_TCP_KEEPALIVE_INTERVAL
+		| AST_WS_CLIENT_FIELD_TCP_KEEPALIVE_PROBES
+		| AST_WS_CLIENT_FIELD_PINGPONGS | AST_WS_CLIENT_FIELD_PINGPONG_INTERVAL
+		| AST_WS_CLIENT_FIELD_PINGPONG_PROBES | AST_WS_CLIENT_FIELD_WRITE_TIMEOUT,
+};
+
+/*
+ * The first 29 fields are reserved for the websocket client core.
+ */
+#define AST_WS_CLIENT_FIELD_USER_START 30
+
+struct ast_websocket_client {
+	SORCERY_OBJECT(details);
+	AST_DECLARE_STRING_FIELDS(
+		AST_STRING_FIELD(uri);           /*!< Server URI */
+		AST_STRING_FIELD(protocols);     /*!< Websocket protocols to use with server */
+		AST_STRING_FIELD(username);      /*!< Auth user name */
+		AST_STRING_FIELD(password);      /*!< Auth password */
+		AST_STRING_FIELD(ca_list_file);  /*!< CA file */
+		AST_STRING_FIELD(ca_list_path);  /*!< CA path */
+		AST_STRING_FIELD(cert_file);     /*!< Certificate file */
+		AST_STRING_FIELD(priv_key_file); /*!< Private key file */
+	);
+	int invalid;                         /*!< Invalid configuration */
+	enum ast_ws_client_fields invalid_fields;  /*!< Invalid fields */
+	enum ast_websocket_type connection_type; /*!< Connection type */
+	int connect_timeout;                 /*!< Connection timeout (ms) */
+	unsigned int reconnect_attempts;     /*!< How many attempts before returning an error */
+	unsigned int reconnect_interval;     /*!< How often to attempt a reconnect (ms) */
+	int tls_enabled;                     /*!< TLS enabled */
+	int verify_server_cert;              /*!< Verify server certificate */
+	int verify_server_hostname;          /*!< Verify server hostname */
+	AST_STRING_FIELD_EXTENDED(uri_params); /*!< Additional URI parameters */
+	AST_STRING_FIELD_EXTENDED(proxy_host);  /*!< Proxy server URI */
+	AST_STRING_FIELD_EXTENDED(proxy_username);  /*!< Proxy username */
+	AST_STRING_FIELD_EXTENDED(proxy_password);  /*!< Proxy password */
+	int tcp_keepalives;                  /*!< Enable TCP Keepalives */
+	unsigned int tcp_keepalive_time;     /*!< Start sending when connection has been idle for this many seconds */
+	unsigned int tcp_keepalive_interval; /*!< Send keepalives at this interval in seconds */
+	unsigned int tcp_keepalive_probes;   /*!< Close connection after this many missed responses */
+	int pingpongs;                   /*!< Enable WebSocket PING/PONGs */
+	unsigned int pingpong_interval;  /*!< Send WebSocket PINGs at this interval in seconds */
+	unsigned int pingpong_probes;    /*!< Close connection after this many missed PONG responses */
+	int write_timeout;               /*!< Write timeout (ms) */
+};
+
+/*!
+ * \brief Retrieve a container of all websocket client objects.
+ *
+ * \return The container. It may be empty but must always be cleaned up by the caller.
+ */
+struct ao2_container *ast_websocket_client_retrieve_all(void);
+
+/*!
+ * \brief Retrieve a websocket client object by ID.
+ *
+ * \param id The ID of the websocket client object.
+ * \return The websocket client ao2 object or NULL if not found. The reference
+ *         must be cleaned up by the caller.
+ */
+struct ast_websocket_client *ast_websocket_client_retrieve_by_id(const char *id);
+
+/*!
+ * \brief Detect changes between two websocket client configurations.
+ *
+ * \param old_ow The old websocket configuration.
+ * \param new_ow The new websocket configuration.
+ * \return A bitmask of changed fields.
+ */
+enum ast_ws_client_fields ast_websocket_client_get_field_diff(
+	struct ast_websocket_client *old_wc,
+	struct ast_websocket_client *new_wc);
+
+/*!
+ * \brief Add sorcery observers for websocket client events.
+ *
+ * \param callbacks The observer callbacks to add.
+ * \return	 0 on success, -1 on failure.
+ */
+int ast_websocket_client_observer_add(
+	const struct ast_sorcery_observer *callbacks);
+
+/*!
+ * \brief Remove sorcery observers for websocket client events.
+ *
+ * \param callbacks The observer callbacks to remove.
+ */
+void ast_websocket_client_observer_remove(
+	const struct ast_sorcery_observer *callbacks);
+
+/*!
+ * \brief Connect to a websocket server using the configured authentication,
+ *        retry and TLS options.
+ *
+ * \param wc A pointer to the ast_websocket_structure
+ * \param lock_obj A pointer to an ao2 object to lock while the
+ *                 connection is being attempted or NULL if no locking is needed.
+ * \param display_name An id string to use for logging messages.
+ *                     If NULL or empty the connection's ID will be used.
+ * \param result A pointer to an enum ast_websocket_result to store the
+ *               result of the connection attempt.
+ *
+ * \return A pointer to the ast_websocket structure on success, or NULL on failure.
+ *
+ * \warning The returned websocket must be closed with \ref ast_websocket_close
+ * and its reference count decremented with \ref ast_websocket_unref when
+ * it's no longer needed.
+ */
+struct ast_websocket *ast_websocket_client_connect(struct ast_websocket_client *wc,
+	void *lock_obj, const char *display_name, enum ast_websocket_result *result);
+
+/*!
+ * \brief Add additional parameters to the URI.
+ *
+ * \param wc A pointer to the ast_websocket_structure
+ * \param uri_params A string containing URLENCODED parameters to append to the URI.
+ */
+void ast_websocket_client_add_uri_params(struct ast_websocket_client *wc,
+	const char *uri_params);
+
+/*!
+ * \brief Force res_websocket_client to reload its configuration.
+ * \return	 0 on success, -1 on failure.
+ */
+int ast_websocket_client_reload(void);
+
+#endif /* _RES_WEBSOCKET_CLIENT_H */

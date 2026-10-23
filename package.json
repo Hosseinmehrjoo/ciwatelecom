@@ -1,0 +1,12 @@
+{
+  "name": "ciwa-telecom",
+  "private": true,
+  "version": "0.2.0",
+  "scripts": {
+    "dev:api": "npm run dev --prefix backend/api",
+    "dev:ui": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "test": "npm test --prefix backend/api",
+    "start:prod": "cd backend/api && CIWA_ENV=production CIWA_SERVE_UI=1 node src/server.js"
+  }
+}

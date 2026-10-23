@@ -1,0 +1,37 @@
+#!/bin/sh
+
+if [ "$1" = "-q" ] ; then
+	quiet=1
+	shift
+fi
+
+PATCH=${PATCH:-patch}
+
+patchdir=${1:?You must supply a patches directory}
+sourcedir=${2?:You must supply a source directory}
+
+if [ ! -d "$patchdir" ] ; then
+	echo "$patchdir is not a directory" >&2
+	exit 1
+fi
+
+if [ ! -d "$sourcedir" ] ; then
+	echo "$sourcedir is not a directory"  >&2
+	exit 1
+fi
+
+# Patterns used in filename expansion (globs) are sorted according to the
+# current locale, so there is no need to do it explicitly.
+for patchfile in "$patchdir"/*.patch ; do
+	# A glob that doesn't match is not replaced, so we handle that here. We
+	# should only fail this test if there are no patch files.
+	[ -f "$patchfile" ] || {
+		echo "No patches in $patchdir" >&2
+		exit 0
+	}
+
+	[ -z "$quiet" ] && echo "Applying patch $(basename "$patchfile")"
+	${PATCH} -d "$sourcedir" -p1 -i "$patchfile" >/dev/null || exit 1
+done
+
+exit 0

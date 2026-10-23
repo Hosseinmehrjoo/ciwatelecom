@@ -1,0 +1,48 @@
+# --- Secrets & local env ---
+.env
+.env.*
+.git_removed_1792786179/*
+!.env.example
+
+# --- CIWA runtime config (generated / sensitive) ---
+config/ciwa/auth.json
+config/ciwa/sessions.json
+config/ciwa/database.json
+
+# --- Dependencies ---
+node_modules/
+backend/api/node_modules/
+frontend/node_modules/
+
+# --- Build output ---
+frontend/dist/
+dist/
+*.tsbuildinfo
+
+# --- Runtime & data (keep directory placeholders via .gitkeep) ---
+/storage/*
+!/storage/**/
+!/storage/**/.gitkeep
+
+/logs/*
+!/logs/**/
+!/logs/**/.gitkeep
+
+/database/backups/*
+!/database/backups/.gitkeep
+
+/runtime/
+*.log
+
+# --- OS & editors ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- Optional local overrides ---
+config/ciwa/network.desired.json
+config/ciwa/firewall.nft

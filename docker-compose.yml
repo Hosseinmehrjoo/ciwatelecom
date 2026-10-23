@@ -1,0 +1,57 @@
+# CIWA Telecom — production stack (API + UI + PostgreSQL)
+# Asterisk remains on host: scripts/install/start-asterisk.sh
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${CIWA_DB_NAME:-ciwa_telecom}
+      POSTGRES_USER: ${CIWA_DB_USER:-ciwa}
+      POSTGRES_PASSWORD: ${CIWA_DB_PASSWORD:-changeme}
+    volumes:
+      - ciwa_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${CIWA_DB_USER:-ciwa} -d ${CIWA_DB_NAME:-ciwa_telecom}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      CIWA_ENV: production
+      CIWA_TRUST_PROXY: '1'
+      CIWA_DATABASE_URL: postgres://${CIWA_DB_USER:-ciwa}:${CIWA_DB_PASSWORD:-changeme}@postgres:5432/${CIWA_DB_NAME:-ciwa_telecom}
+      AMI_HOST: ${AMI_HOST:-host.docker.internal}
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    volumes:
+      - ./config:/app/config
+      - ./storage:/app/storage
+      - ./logs:/app/logs
+      - ./database:/app/database
+      - ./runtime:/app/runtime
+    ports:
+      - '${CIWA_API_PORT:-8788}:8788'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.web
+    restart: unless-stopped
+    ports:
+      - '${CIWA_HTTP_PORT:-8080}:80'
+    depends_on:
+      - api
+
+volumes:
+  ciwa_pg_data:

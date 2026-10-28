@@ -26,7 +26,7 @@ export async function openPool(config) {
       database: config.database,
       user: config.user,
       password: config.password,
-      ssl: config.ssl ? { rejectUnauthorized: false } : false,
+      ssl: config.ssl ? { rejectUnauthorized: config.sslInsecure !== true } : false,
       max: 10,
     })
     poolDriver = 'postgres'

@@ -1,6 +1,8 @@
 import { uid, resolvePath, writeJson } from '../store/fsutil.js'
 import { loadDocumentSync, primeCache, saveDocument } from '../store/documentStore.js'
-import { hashPassword, verifyPassword } from './password.js'
+import { assertPasswordStrength, hashPassword, verifyPassword } from './password.js'
+
+const DUMMY = hashPassword('ciwa-dummy-password', 'ab'.repeat(16))
 
 const AUTH_PATH = resolvePath('config/ciwa/auth.json')
 
@@ -55,9 +57,10 @@ export function findUserById(id) {
 
 export function authenticate(username, password) {
   const user = findUserByUsername(username)
-  if (!user || !verifyPassword(password, user.salt, user.passwordHash)) {
-    return null
-  }
+  const salt = user?.salt || DUMMY.salt
+  const hash = user?.passwordHash || DUMMY.hash
+  const ok = verifyPassword(password, salt, hash)
+  if (!user || !ok) return null
   return sanitizeUser(user)
 }
 
@@ -84,8 +87,8 @@ export async function upsertUser({ id, username, displayName, role, password }) 
     throw error
   }
   const name = String(username || '').trim()
-  if (!name) {
-    const error = new Error('نام کاربری لازم است.')
+  if (!/^[A-Za-z0-9._-]{1,64}$/.test(name)) {
+    const error = new Error('نام کاربری فقط حروف انگلیسی، عدد، نقطه، خط تیره و زیرخط (حداکثر ۶۴ نویسه).')
     error.status = 400
     throw error
   }
@@ -108,11 +111,18 @@ export async function upsertUser({ id, username, displayName, role, password }) 
     createdAt: prev?.createdAt || new Date().toISOString(),
   }
   if (password) {
+    assertPasswordStrength(password)
     const { salt, hash } = hashPassword(password)
     record.salt = salt
     record.passwordHash = hash
+    record.mustChangePassword = false
   } else if (!prev) {
     const error = new Error('رمز عبور لازم است.')
+    error.status = 400
+    throw error
+  }
+  if (prev?.role === 'admin' && role !== 'admin' && countAdmins(auth.users, userId) < 1) {
+    const error = new Error('حداقل یک مدیر باید در سامانه بماند.')
     error.status = 400
     throw error
   }
@@ -122,13 +132,23 @@ export async function upsertUser({ id, username, displayName, role, password }) 
   return sanitizeUser(record)
 }
 
+function countAdmins(users, ignoreId) {
+  return users.filter((user) => user.id !== ignoreId && user.role === 'admin').length
+}
+
 export async function deleteUser(id) {
-  if (id === 'admin') {
-    const error = new Error('حذف کاربر پیش‌فرض admin مجاز نیست.')
+  const auth = loadAuth()
+  const target = auth.users.find((user) => user.id === id)
+  if (!target) {
+    const error = new Error('کاربر پیدا نشد.')
+    error.status = 404
+    throw error
+  }
+  if (target.role === 'admin' && countAdmins(auth.users, id) < 1) {
+    const error = new Error('حذف آخرین مدیر مجاز نیست.')
     error.status = 400
     throw error
   }
-  const auth = loadAuth()
   auth.users = auth.users.filter((user) => user.id !== id)
   await saveDocument('auth', auth, defaultAuth())
   return { ok: true }
@@ -147,6 +167,7 @@ export async function changePassword(userId, currentPassword, newPassword) {
     error.status = 401
     throw error
   }
+  assertPasswordStrength(newPassword)
   const { salt, hash } = hashPassword(newPassword)
   user.salt = salt
   user.passwordHash = hash

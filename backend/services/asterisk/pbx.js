@@ -4,7 +4,8 @@ import { readCoreInfo } from './coreInfo.js'
 import { generateAsteriskConfigs } from './generateConf.js'
 import { probeAmi } from './ami.js'
 import { loadPbx, removeItem, savePbx, upsertItem, collectionIdField } from '../store/pbxStore.js'
-import { normalizeCollectionItem } from './pbxNormalize.js'
+import { normalizeCollectionItem, validateCollectionItem } from './pbxNormalize.js'
+import { assertChannel, assertDialToken } from './confSafe.js'
 import { resolvePath } from '../store/fsutil.js'
 
 function withLive(meta = {}) {
@@ -70,7 +71,7 @@ export async function listCollection(key) {
   return {
     connected: ami.connected,
     amiError: ami.error,
-    items: pbx[key] || [],
+    items: (pbx[key] || []).map(maskSecrets),
   }
 }
 
@@ -83,18 +84,25 @@ async function reloadAsteriskIfConnected() {
 }
 
 export async function saveCollectionItem(key, item) {
-  const normalized = normalizeCollectionItem(key, item)
+  const normalized = validateCollectionItem(key, normalizeCollectionItem(key, item))
   const idField = collectionIdField(key)
   const existing = loadPbx()
   const list = existing[key] || []
   const id = normalized[idField] || normalized.id || normalized.number
   const prev = list.find((row) => String(row[idField]) === String(id) || String(row.id) === String(id))
-  if (prev && !normalized.secret && prev.secret) normalized.secret = prev.secret
+  if (!normalized.secret || normalized.secret === '********') {
+    if (prev?.secret) normalized.secret = prev.secret
+    else delete normalized.secret
+  }
+  if (!normalized.pin || normalized.pin === '********') {
+    if (prev?.pin) normalized.pin = prev.pin
+    else delete normalized.pin
+  }
   const pbx = await upsertItem(key, normalized, idField)
   const generated = generateAsteriskConfigs(pbx)
   const ami = await reloadAsteriskIfConnected()
   const saved = (pbx[key] || []).find((row) => String(row[idField]) === String(normalized[idField])) || normalized
-  return { item: saved, generated, connected: ami.connected }
+  return { item: maskSecrets(saved), generated, connected: ami.connected }
 }
 
 export async function deleteCollectionItem(key, id) {
@@ -146,17 +154,12 @@ export async function listChannels() {
 }
 
 export async function originateCall({ extension, destination, callerId }) {
+  const ext = assertDialToken(extension, 'داخلی')
+  const dest = assertDialToken(destination, 'مقصد')
   const ami = await probeAmi()
   if (!ami.connected) {
     const error = new Error(ami.error || 'مرکز تلفن به هسته وصل نیست.')
     error.status = 503
-    throw error
-  }
-  const ext = String(extension || '').trim()
-  const dest = String(destination || '').trim()
-  if (!ext || !dest) {
-    const error = new Error('داخلی و مقصد لازم است.')
-    error.status = 400
     throw error
   }
   const response = await ami.client.originate({
@@ -168,18 +171,14 @@ export async function originateCall({ extension, destination, callerId }) {
 }
 
 export async function hangupChannel(channel) {
+  const safeChannel = assertChannel(channel)
   const ami = await probeAmi()
   if (!ami.connected) {
     const error = new Error(ami.error || 'مرکز تلفن به هسته وصل نیست.')
     error.status = 503
     throw error
   }
-  if (!channel) {
-    const error = new Error('شناسه کانال لازم است.')
-    error.status = 400
-    throw error
-  }
-  const response = await ami.client.hangup(channel)
+  const response = await ami.client.hangup(safeChannel)
   return { ok: true, response }
 }
 
@@ -282,7 +281,8 @@ export async function setQueueMemberPause({ member, paused, reason }) {
     error.status = 503
     throw error
   }
-  const iface = String(member || '').includes('/') ? member : `PJSIP/${member}`
+  const rawMember = assertDialToken(String(member || '').split('/').pop(), 'عضو صف')
+  const iface = String(member || '').includes('/') ? `${assertDialToken(String(member).split('/')[0], 'رابط')}/${rawMember}` : `PJSIP/${rawMember}`
   const response = await ami.client.queuePause({ interfaceName: iface, paused: Boolean(paused), reason: reason || '' })
   return { ok: true, response, member: iface, paused: Boolean(paused) }
 }
@@ -301,7 +301,7 @@ export function listRecordings() {
       if (name === '.gitkeep') continue
       const full = path.join(root, name)
       const stat = fs.statSync(full)
-      if (!stat.isFile()) continue
+      if (!stat.isFile() || !mimeForRecording(name).startsWith('audio/')) continue
       const numbers = extractPhoneTokens(name)
       items.push({
         id: name,
@@ -332,6 +332,7 @@ export function resolveRecordingFile(id) {
   for (const root of roots) {
     const full = path.join(root, safe)
     if (!fs.existsSync(full) || !fs.statSync(full).isFile()) continue
+    if (!mimeForRecording(safe).startsWith('audio/')) continue
     const resolvedRoot = path.resolve(root)
     const resolvedFile = path.resolve(full)
     if (!resolvedFile.startsWith(resolvedRoot + path.sep)) continue
@@ -357,7 +358,17 @@ function mimeForRecording(name) {
   if (lower.endsWith('.mp3')) return 'audio/mpeg'
   if (lower.endsWith('.ogg')) return 'audio/ogg'
   if (lower.endsWith('.webm')) return 'audio/webm'
+  if (lower.endsWith('.gsm')) return 'audio/gsm'
   return 'application/octet-stream'
+}
+
+function maskSecrets(item) {
+  if (!item || typeof item !== 'object') return item
+  const copy = { ...item }
+  for (const key of ['secret', 'pin', 'vmPin']) {
+    if (copy[key]) copy[key] = '********'
+  }
+  return copy
 }
 
 export { withLive }

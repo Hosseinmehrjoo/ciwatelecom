@@ -15,11 +15,40 @@ export function requestContext(req, res, next) {
   next()
 }
 
+function loginWindowMs() {
+  return Number(process.env.CIWA_LOGIN_WINDOW_MS || 5 * 60_000)
+}
+
+function loginMaxAttempts() {
+  return Number(process.env.CIWA_LOGIN_MAX_ATTEMPTS || 8)
+}
+
+function loginKey(req) {
+  return req.ip || req.socket.remoteAddress || 'unknown'
+}
+
+function pruneLoginAttempts(now) {
+  if (loginAttempts.size < 2000) return
+  for (const [key, bucket] of loginAttempts) {
+    if (now > bucket.resetAt) loginAttempts.delete(key)
+  }
+}
+
 export function rateLimitLogin(req, res, next) {
-  const windowMs = Number(process.env.CIWA_LOGIN_WINDOW_MS || 60_000)
-  const max = Number(process.env.CIWA_LOGIN_MAX_ATTEMPTS || 20)
-  const key = req.ip || req.socket.remoteAddress || 'unknown'
   const now = Date.now()
+  pruneLoginAttempts(now)
+  const bucket = loginAttempts.get(loginKey(req))
+  if (bucket && now <= bucket.resetAt && bucket.count >= loginMaxAttempts()) {
+    res.status(429).json({ error: 'rate_limited', message: 'تعداد تلاش ورود زیاد است. کمی بعد دوباره امتحان کنید.' })
+    return
+  }
+  next()
+}
+
+export function noteLoginFailure(req) {
+  const now = Date.now()
+  const windowMs = loginWindowMs()
+  const key = loginKey(req)
   const bucket = loginAttempts.get(key) || { count: 0, resetAt: now + windowMs }
   if (now > bucket.resetAt) {
     bucket.count = 0
@@ -27,11 +56,10 @@ export function rateLimitLogin(req, res, next) {
   }
   bucket.count += 1
   loginAttempts.set(key, bucket)
-  if (bucket.count > max) {
-    res.status(429).json({ error: 'rate_limited', message: 'تعداد تلاش ورود زیاد است. کمی بعد دوباره امتحان کنید.' })
-    return
-  }
-  next()
+}
+
+export function clearLoginFailures(req) {
+  loginAttempts.delete(loginKey(req))
 }
 
 export function clientIp(req) {

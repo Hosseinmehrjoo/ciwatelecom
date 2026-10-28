@@ -93,10 +93,10 @@ export function revokeSession(token) {
   else saveFileTokens(all)
 }
 
-export function revokeUserSessions(userId) {
+export function revokeUserSessions(userId, exceptToken = '') {
   const all = prune(tokens())
   for (const [token, session] of Object.entries(all)) {
-    if (session.userId === userId) delete all[token]
+    if (session.userId === userId && token !== exceptToken) delete all[token]
   }
   tokenCache = all
   if (isDatabaseDriver()) void dbDeleteUserSessions(userId)

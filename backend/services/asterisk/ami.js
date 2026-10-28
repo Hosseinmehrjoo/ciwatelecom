@@ -1,4 +1,6 @@
+import fs from 'node:fs'
 import net from 'node:net'
+import { encodeAmi } from './confSafe.js'
 import { loadPbx } from '../store/pbxStore.js'
 
 /**
@@ -153,10 +155,6 @@ export class AmiClient {
   }
 }
 
-function encodeAmi(fields) {
-  return `${Object.entries(fields).map(([key, value]) => `${key}: ${value}`).join('\r\n')}\r\n\r\n`
-}
-
 function parseAmi(packet) {
   const message = {}
   for (const line of packet.split(/\r?\n/)) {
@@ -167,10 +165,19 @@ function parseAmi(packet) {
   return message
 }
 
+export function resolveAmiHost(configured, { inDocker } = {}) {
+  const host = String(configured || '127.0.0.1').trim() || '127.0.0.1'
+  if (process.env.CIWA_AMI_HOST_MODE === 'literal') return host
+  const loopback = host === '127.0.0.1' || host === 'localhost' || host === '::1'
+  const docker = inDocker ?? fs.existsSync('/.dockerenv')
+  if (loopback && docker) return process.env.CIWA_AMI_DOCKER_HOST || 'host.docker.internal'
+  return host
+}
+
 export function createAmiFromConfig() {
   const pbx = loadPbx()
   return new AmiClient({
-    host: process.env.AMI_HOST || pbx.ami.bindIp || '127.0.0.1',
+    host: resolveAmiHost(process.env.AMI_HOST || pbx.ami.bindIp || '127.0.0.1'),
     port: Number(process.env.AMI_PORT || pbx.ami.port || 5038),
     username: process.env.AMI_USERNAME || pbx.ami.username || 'ciwa',
     secret: process.env.AMI_SECRET || pbx.ami.secret || 'ciwa',

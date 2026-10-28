@@ -3,7 +3,7 @@ import cors from 'cors'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { requestContext, rateLimitLogin } from '../../services/http/security.js'
+import { clearLoginFailures, noteLoginFailure, requestContext, rateLimitLogin } from '../../services/http/security.js'
 import { getReadiness } from '../../services/system/health.js'
 import { exportDocumentsToFiles } from '../../services/system/exportDocuments.js'
 import { createBackupArchive, listBackups, restoreBackupArchive } from '../../services/system/backup.js'
@@ -53,7 +53,7 @@ import {
   sanitizeUser,
   upsertUser,
 } from '../../services/auth/authStore.js'
-import { createSession, revokeSession } from '../../services/auth/sessions.js'
+import { createSession, revokeSession, revokeUserSessions } from '../../services/auth/sessions.js'
 import { writeAudit, listAudit } from '../../services/audit/auditLog.js'
 import {
   applyDatabaseSettings,
@@ -77,10 +77,19 @@ if (process.env.CIWA_TRUST_PROXY === '1') {
   app.set('trust proxy', Number(process.env.CIWA_TRUST_PROXY_HOPS || 1))
 }
 
-const corsOrigin = process.env.CIWA_CORS_ORIGIN || true
+const corsOrigin = process.env.CIWA_CORS_ORIGIN
+  ? process.env.CIWA_CORS_ORIGIN.split(',').map((item) => item.trim()).filter(Boolean)
+  : process.env.CIWA_ENV === 'production'
+    ? false
+    : true
 app.use(requestContext)
 app.use(cors({ origin: corsOrigin, credentials: true }))
-app.use(express.json({ limit: '2mb' }))
+app.use(express.json({ limit: '1mb' }))
+app.use('/api', (_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store')
+  res.setHeader('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'")
+  next()
+})
 app.use(attachUser)
 
 const collections = {
@@ -115,7 +124,7 @@ function audit(req, action, meta = {}) {
 }
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, service: 'ciwa-telecom-api', auth: !authDisabled(), env: process.env.CIWA_ENV || 'development' })
+  res.json({ ok: true, service: 'ciwa-telecom-api' })
 })
 
 app.get('/api/health/ready', asyncHandler(async (_req, res) => {
@@ -126,9 +135,12 @@ app.get('/api/health/ready', asyncHandler(async (_req, res) => {
 app.post('/api/auth/login', rateLimitLogin, asyncHandler(async (req, res) => {
   const user = authenticate(req.body?.username, req.body?.password)
   if (!user) {
+    noteLoginFailure(req)
+    audit(req, 'auth.login_failed')
     res.status(401).json({ error: 'invalid_credentials', message: 'نام کاربری یا رمز نادرست است.' })
     return
   }
+  clearLoginFailures(req)
   const session = createSession(user)
   audit(req, 'auth.login', { user: user.username })
   res.json({ token: session.token, expiresAt: session.expiresAt, user })
@@ -147,6 +159,9 @@ app.get('/api/auth/me', requireAuth, (req, res) => {
 
 app.post('/api/auth/change-password', requireAuth, asyncHandler(async (req, res) => {
   await changePassword(req.user.id, req.body?.currentPassword, req.body?.newPassword)
+  const header = req.headers.authorization || ''
+  const token = header.startsWith('Bearer ') ? header.slice(7).trim() : ''
+  revokeUserSessions(req.user.id, token)
   audit(req, 'auth.password_changed')
   res.json({ ok: true })
 }))
@@ -156,19 +171,22 @@ app.get('/api/auth/users', requireAuth, requireMinRole('admin'), (_req, res) => 
 })
 
 app.post('/api/auth/users', requireAuth, requireMinRole('admin'), asyncHandler(async (req, res) => {
-  const user = upsertUser(req.body || {})
+  const user = await upsertUser(req.body || {})
+  if (req.body?.password) revokeUserSessions(user.id)
   audit(req, 'auth.user_created', { target: user.username })
   res.json({ user })
 }))
 
 app.put('/api/auth/users/:id', requireAuth, requireMinRole('admin'), asyncHandler(async (req, res) => {
-  const user = upsertUser({ ...(req.body || {}), id: req.params.id })
+  const user = await upsertUser({ ...(req.body || {}), id: req.params.id })
+  if (req.body?.password) revokeUserSessions(user.id)
   audit(req, 'auth.user_updated', { target: user.username })
   res.json({ user })
 }))
 
 app.delete('/api/auth/users/:id', requireAuth, requireMinRole('admin'), asyncHandler(async (req, res) => {
-  deleteUser(req.params.id)
+  await deleteUser(req.params.id)
+  revokeUserSessions(req.params.id)
   audit(req, 'auth.user_deleted', { target: req.params.id })
   res.json({ ok: true })
 }))
@@ -424,11 +442,14 @@ if (process.env.CIWA_SERVE_UI === '1' && fs.existsSync(uiDist)) {
 }
 
 app.use((error, _req, res, _next) => {
-  console.error(error)
   const status = Number(error?.status) || 500
+  if (status >= 500) console.error(error)
+  const safeMessage = status >= 500 && status !== 503
+    ? 'خطای داخلی سرور.'
+    : (error instanceof Error ? error.message : 'Unknown error')
   res.status(status).json({
-    error: status === 503 ? 'ami_unavailable' : 'internal_error',
-    message: error instanceof Error ? error.message : 'Unknown error',
+    error: status === 503 ? 'ami_unavailable' : status === 400 ? 'bad_request' : 'internal_error',
+    message: safeMessage,
   })
 })
 
@@ -440,6 +461,9 @@ async function start() {
     console.log(`[CIWA] datastore: ${store.driver}`)
   } catch (error) {
     console.error('[CIWA] datastore init failed:', error instanceof Error ? error.message : error)
+  }
+  if (process.env.CIWA_ENV === 'production' && (process.env.CIWA_DISABLE_AUTH === '1' || process.env.CIWA_DISABLE_AUTH === 'true')) {
+    console.warn('[CIWA] CIWA_DISABLE_AUTH is ignored in production')
   }
   app.listen(port, '0.0.0.0', () => {
     console.log(`CIWA Telecom API on http://127.0.0.1:${port}${authDisabled() ? ' (auth disabled)' : ''}`)

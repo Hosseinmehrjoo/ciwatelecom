@@ -3,13 +3,32 @@ import path from 'node:path'
 import { ensureDir, readJson, resolvePath, uid, writeJson } from '../store/fsutil.js'
 
 const ROOT = resolvePath('storage/campaigns')
+const ID_RE = /^[A-Za-z0-9_-]{1,80}$/
+
+export function assertCampaignId(id) {
+  const safe = String(id || '')
+  if (!ID_RE.test(safe)) {
+    const error = new Error('شناسه کمپین نامعتبر است.')
+    error.status = 400
+    throw error
+  }
+  return safe
+}
 
 function campaignPath(id) {
-  return path.join(ROOT, `${id}.json`)
+  const safe = assertCampaignId(id)
+  const full = path.resolve(ROOT, `${safe}.json`)
+  if (!full.startsWith(path.resolve(ROOT) + path.sep)) {
+    const error = new Error('شناسه کمپین نامعتبر است.')
+    error.status = 400
+    throw error
+  }
+  return full
 }
 
 function logsPath(id) {
-  return path.join(ROOT, `${id}.logs.json`)
+  const safe = assertCampaignId(id)
+  return path.resolve(ROOT, `${safe}.logs.json`)
 }
 
 export function listCampaigns() {
@@ -146,7 +165,8 @@ export function logsToCsv(entries) {
 }
 
 function csvEscape(value) {
-  const s = String(value ?? '')
+  let s = String(value ?? '')
+  if (/^[=+\-@\t]/.test(s)) s = `'${s}`
   if (s.includes(',') || s.includes('"') || s.includes('\n')) {
     return `"${s.replace(/"/g, '""')}"`
   }

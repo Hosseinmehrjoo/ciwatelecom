@@ -361,7 +361,7 @@ export function ResourceView({ catalogKey }: { catalogKey: keyof typeof catalogs
               <input
                 className="glass-input rounded-xl px-3 py-2.5 text-sm outline-none"
                 type={field.type || 'text'}
-                required={field.required}
+                required={field.required && !(editingId && (field.key === 'secret' || field.key === 'pin'))}
                 placeholder={field.placeholder}
                 value={form[field.key] ?? ''}
                 onChange={(event) => setForm((current) => ({ ...current, [field.key]: event.target.value }))}

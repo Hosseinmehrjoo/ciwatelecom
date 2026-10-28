@@ -46,3 +46,6 @@ Thumbs.db
 # --- Optional local overrides ---
 config/ciwa/network.desired.json
 config/ciwa/firewall.nft
+
+# --- Local handoff docs ---
+docs/internal-phones-mikrotik.html

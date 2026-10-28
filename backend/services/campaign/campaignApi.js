@@ -22,7 +22,17 @@ import {
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 15 * 1024 * 1024 },
+  limits: { fileSize: 15 * 1024 * 1024, files: 1 },
+  fileFilter(_req, file, callback) {
+    const name = String(file.originalname || '')
+    if (!/\.(txt|csv|xlsx|xls)$/i.test(name) || name.includes('\0') || name.includes('/') || name.includes('\\')) {
+      const error = new Error('فرمت فایل پشتیبانی نمی‌شود. txt، csv یا xlsx مجاز است.')
+      error.status = 400
+      callback(error)
+      return
+    }
+    callback(null, true)
+  },
 })
 
 export const campaignUpload = upload.single('file')
@@ -85,7 +95,8 @@ export function registerCampaignRoutes(app, { asyncHandler, requireMinRole, audi
     const logs = loadLogs(req.params.id)
     const csv = logsToCsv(logs.entries)
     res.setHeader('Content-Type', 'text/csv; charset=utf-8')
-    res.setHeader('Content-Disposition', `attachment; filename="campaign-${req.params.id}.csv"`)
+    const safeName = String(req.params.id).replace(/[^\w-]/g, '') || 'campaign'
+    res.setHeader('Content-Disposition', `attachment; filename="campaign-${safeName}.csv"`)
     res.send(`\uFEFF${csv}`)
   }))
 }

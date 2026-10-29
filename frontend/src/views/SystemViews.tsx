@@ -238,6 +238,8 @@ export function SipSettingsView() {
         ['rtpStart', 'شروع RTP'],
         ['rtpEnd', 'پایان RTP'],
         ['externalIp', 'IP خارجی (NAT)'],
+        ['provisionHost', 'آدرس سرور برای گوشی سیسکو'],
+        ['ciscoLoad', 'نام فریم‌ور SIP42'],
         ['localNets', 'شبکه‌های محلی (با ویرگول)'],
       ] as const).map(([key, label]) => (
         <Field

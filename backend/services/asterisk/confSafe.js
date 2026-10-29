@@ -48,6 +48,16 @@ export function assertChannel(value) {
   return text
 }
 
+export function normalizeMac(value) {
+  const hex = String(value ?? '').replace(/[^0-9a-fA-F]/g, '').toUpperCase()
+  if (!/^[0-9A-F]{12}$/.test(hex)) {
+    const error = new Error('مک‌آدرس گوشی سیسکو باید ۱۲ رقم هگز باشد.')
+    error.status = 400
+    throw error
+  }
+  return hex
+}
+
 export function assertHost(value, label = 'میزبان') {
   const text = assertNoControl(value, label).trim()
   if (!/^[A-Za-z0-9.:_-]{1,253}$/.test(text)) {

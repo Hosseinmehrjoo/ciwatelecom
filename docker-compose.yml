@@ -37,6 +37,7 @@ services:
       - ./logs:/app/logs
       - ./database:/app/database
       - ./runtime:/app/runtime
+      - ./tftp:/app/tftp
     ports:
       - '${CIWA_API_PORT:-8788}:8788'
     depends_on:

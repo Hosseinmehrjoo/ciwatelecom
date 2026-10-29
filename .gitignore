@@ -32,6 +32,9 @@ dist/
 !/database/backups/.gitkeep
 
 /runtime/
+
+/tftp/*
+!/tftp/.gitkeep
 *.log
 
 # --- OS & editors ---

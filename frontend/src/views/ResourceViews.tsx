@@ -7,8 +7,9 @@ type Field = {
   key: string
   label: string
   placeholder?: string
-  type?: 'text' | 'number' | 'password' | 'checkbox'
+  type?: 'text' | 'number' | 'password' | 'checkbox' | 'select'
   required?: boolean
+  options?: { value: string; label: string }[]
 }
 
 const catalogs: Record<string, {
@@ -28,18 +29,31 @@ const catalogs: Record<string, {
     columns: [
       { key: 'number', label: 'شماره' },
       { key: 'name', label: 'نام' },
+      { key: 'phoneType', label: 'نوع گوشی' },
       { key: 'secret', label: 'رمز' },
       { key: 'voicemail', label: 'صندوق صوتی' },
     ],
     fields: [
       { key: 'number', label: 'شماره داخلی', required: true },
       { key: 'name', label: 'نام نمایشی', required: true },
+      {
+        key: 'phoneType',
+        label: 'نوع گوشی',
+        type: 'select',
+        options: [
+          { value: 'webrtc', label: 'سافت‌فون / WebRTC' },
+          { value: 'sip', label: 'تلفن SIP معمولی' },
+          { value: 'cisco-7942', label: 'Cisco 7942' },
+          { value: 'cisco-7962', label: 'Cisco 7962' },
+        ],
+      },
+      { key: 'mac', label: 'مک‌آدرس سیسکو', placeholder: '001122334455' },
       { key: 'secret', label: 'رمز SIP', type: 'password', required: true },
       { key: 'ringTimeout', label: 'مهلت زنگ', type: 'number' },
       { key: 'voicemail', label: 'صندوق صوتی', type: 'checkbox' },
       { key: 'recordCalls', label: 'ضبط مکالمه', type: 'checkbox' },
     ],
-    defaults: { ringTimeout: 30, voicemail: true, maxContacts: 3, recordCalls: false },
+    defaults: { ringTimeout: 30, voicemail: true, maxContacts: 3, recordCalls: false, phoneType: 'webrtc' },
   },
   trunks: {
     key: 'trunks',
@@ -357,11 +371,19 @@ export function ResourceView({ catalogKey }: { catalogKey: keyof typeof catalogs
                 onChange={(event) => setForm((current) => ({ ...current, [field.key]: event.target.checked }))}
                 className="h-4 w-4"
               />
+            ) : field.type === 'select' ? (
+              <select
+                className="glass-input rounded-xl px-3 py-2.5 text-sm outline-none"
+                value={String(form[field.key] ?? field.options?.[0]?.value ?? '')}
+                onChange={(event) => setForm((current) => ({ ...current, [field.key]: event.target.value }))}
+              >
+                {field.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
             ) : (
               <input
                 className="glass-input rounded-xl px-3 py-2.5 text-sm outline-none"
                 type={field.type || 'text'}
-                required={field.required && !(editingId && (field.key === 'secret' || field.key === 'pin'))}
+                required={(field.required && !(editingId && (field.key === 'secret' || field.key === 'pin'))) || (field.key === 'mac' && String(form.phoneType || '').startsWith('cisco'))}
                 placeholder={field.placeholder}
                 value={form[field.key] ?? ''}
                 onChange={(event) => setForm((current) => ({ ...current, [field.key]: event.target.value }))}

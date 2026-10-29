@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>راهنمای نصب CIWA Telecom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #17211c;
+      --muted: #5e675f;
+      --line: #e3ddd2;
+      --paper: #f3f0e8;
+      --card: #fffcf7;
+      --rail: #10241c;
+      --rail-text: #d7e4dc;
+      --accent: #0d6b4c;
+      --accent-soft: #e5f3ec;
+      --copper: #8a4e16;
+      --copper-soft: #f8efe3;
+      --rose: #7d2e2e;
+      --rose-soft: #f8e8e4;
+      --code: #14211b;
+      --shadow: 0 16px 40px rgba(28, 24, 16, 0.06);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(880px 380px at 100% -8%, #efe4d2 0%, transparent 58%),
+        var(--paper);
+      color: var(--ink);
+      font-family: Vazirmatn, Tahoma, sans-serif;
+      font-size: 16.5px;
+      line-height: 1.85;
+    }
+    a { color: var(--accent); }
+    button, input, select { font-family: inherit; }
+    .app { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+    .rail {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      background: var(--rail);
+      color: var(--rail-text);
+      padding: 22px 16px 28px;
+    }
+    .brand { display: flex; gap: 12px; align-items: center; padding: 0 8px 18px; }
+    .mark {
+      width: 42px; height: 42px; border-radius: 14px;
+      background: linear-gradient(160deg, #1f8a62, #0c3d2c);
+      display: grid; place-items: center; color: white; font-weight: 700;
+    }
+    .brand strong { display: block; color: white; font-size: 15px; }
+    .brand span { color: #9bb3a8; font-size: 12px; }
+    .mode { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 8px 14px; }
+    .mode button, .jump {
+      border: 1px solid rgba(255,255,255,.12);
+      background: transparent;
+      color: var(--rail-text);
+      border-radius: 12px;
+      padding: 8px 8px;
+      cursor: pointer;
+      font-size: 12.5px;
+    }
+    .mode button.active { background: #1b3d30; color: white; border-color: #2f6a52; }
+    .progress-label { margin: 8px 10px 6px; font-size: 12px; color: #9bb3a8; }
+    .bar { height: 6px; margin: 0 10px 14px; background: #1c3329; border-radius: 99px; overflow: hidden; }
+    .bar i { display: block; height: 100%; width: 0; background: #3dbe8b; }
+    .rail nav a {
+      display: block;
+      color: var(--rail-text);
+      text-decoration: none;
+      font-size: 13.5px;
+      padding: 7px 10px;
+      border-radius: 10px;
+    }
+    .rail nav a:hover, .rail nav a.active { background: rgba(255,255,255,.06); color: white; }
+    .rail nav a small { display: inline-block; width: 1.6rem; color: #7f9c8e; }
+    .main { width: min(980px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 80px; }
+    .hero { padding: 12px 0 26px; border-bottom: 1px solid var(--line); }
+    .eyebrow { margin: 0 0 8px; color: var(--accent); font-weight: 600; font-size: 13px; }
+    h1 { margin: 0; font-size: clamp(32px, 5vw, 52px); line-height: 1.25; letter-spacing: -0.03em; }
+    .lead { margin: 12px 0 0; max-width: 42rem; color: var(--muted); font-size: 18px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .chip { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+    .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
+    .path {
+      text-align: right;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .path strong { display: block; font-size: 16px; }
+    .path span { color: var(--muted); font-size: 13.5px; }
+    .path.on { border-color: #9dccb8; background: #f3faf6; }
+    section {
+      margin-top: 22px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 26px 26px 20px;
+      box-shadow: var(--shadow);
+    }
+    section h2 { margin: 0 0 8px; font-size: 24px; letter-spacing: -0.02em; }
+    h3 { margin: 18px 0 8px; font-size: 17px; }
+    .num { color: var(--accent); font-weight: 600; margin-left: 8px; }
+    p { margin: 0 0 12px; }
+    .quiet { color: var(--muted); }
+    ol.steps, ul.clean { margin: 0 0 8px; padding: 0 22px 0 0; }
+    ol.steps li, ul.clean li { margin: 0 0 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 14.5px; }
+    th, td { text-align: right; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; font-size: 12px; }
+    code, pre, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; }
+    code { background: #f3eee6; border-radius: 6px; padding: 1px 6px; }
+    .codebox { position: relative; margin: 10px 0 4px; }
+    pre {
+      direction: ltr; text-align: left;
+      background: var(--code); color: #f3eee6;
+      border-radius: 16px; padding: 16px 18px 16px 72px;
+      overflow: auto; line-height: 1.65; margin: 0;
+    }
+    pre code { background: none; color: inherit; padding: 0; }
+    .copy {
+      position: absolute; top: 10px; left: 10px;
+      border: 0; border-radius: 999px; background: #2a3b33; color: #efe8dc;
+      padding: 4px 10px; cursor: pointer; font-size: 12px;
+    }
+    .note, .warn, .stop {
+      border-radius: 14px; padding: 12px 14px; margin: 12px 0; font-size: 14.5px;
+    }
+    .note { background: var(--accent-soft); color: #134838; }
+    .warn { background: var(--copper-soft); color: #6d4510; }
+    .stop { background: var(--rose-soft); color: var(--rose); }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tool {
+      display: grid; gap: 10px;
+      background: #f7f3ec; border-radius: 16px; padding: 14px;
+    }
+    .tool label { font-size: 13px; color: var(--muted); display: grid; gap: 4px; }
+    .tool input {
+      border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px;
+      background: white; font-size: 14px;
+    }
+    .checks { list-style: none; margin: 0; padding: 0; }
+    .checks li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .checks input { margin-top: 7px; width: 16px; height: 16px; accent-color: var(--accent); }
+    details { border-top: 1px solid var(--line); padding: 10px 0; }
+    summary { cursor: pointer; font-weight: 600; }
+    .menu { display: none; }
+    footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
+    [hidden] { display: none !important; }
+    @media (max-width: 960px) {
+      .app { grid-template-columns: 1fr; }
+      .rail { position: fixed; z-index: 20; width: min(320px, 88vw); transform: translateX(110%); transition: .2s; }
+      .rail.open { transform: none; }
+      .menu {
+        display: inline-flex; position: sticky; top: 10px; z-index: 10;
+        margin: 10px 0; border: 1px solid var(--line); background: var(--card);
+        border-radius: 999px; padding: 8px 14px; cursor: pointer;
+      }
+      .paths, .grid2 { grid-template-columns: 1fr; }
+      section { padding: 20px 16px; }
+      pre { padding-left: 16px; padding-top: 42px; }
+    }
+    @media print {
+      .rail, .menu, .copy, .mode, .paths { display: none !important; }
+      .app { display: block; }
+      section { break-inside: avoid; box-shadow: none; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="rail" id="rail">
+      <div class="brand">
+        <div class="mark">C</div>
+        <div>
+          <strong>CIWA Telecom</strong>
+          <span>نصب از صفر تا تماس</span>
+        </div>
+      </div>
+      <div class="mode" role="group" aria-label="مسیر نصب">
+        <button type="button" id="mode-internal" class="active">فقط داخلی</button>
+        <button type="button" id="mode-external">داخلی و شهری</button>
+      </div>
+      <div class="progress-label">پیشرفت چک‌لیست: <b id="progress-text">۰٪</b></div>
+      <div class="bar" aria-hidden="true"><i id="progress-bar"></i></div>
+      <nav id="toc">
+        <a href="#start"><small>۰۱</small>شروع</a>
+        <a href="#words"><small>۰۲</small>کلمه‌هایی که لازم است</a>
+        <a href="#hardware"><small>۰۳</small>سیستم و شبکه</a>
+        <a href="#os"><small>۰۴</small>نصب سیستم‌عامل</a>
+        <a href="#prepare"><small>۰۵</small>آماده‌سازی سرور</a>
+        <a href="#packages"><small>۰۶</small>نصب Docker و Node</a>
+        <a href="#app"><small>۰۷</small>گرفتن نرم‌افزار</a>
+        <a href="#asterisk"><small>۰۸</small>ساخت Asterisk</a>
+        <a href="#panel"><small>۰۹</small>بالا آوردن پنل</a>
+        <a href="#login"><small>۱۰</small>اولین ورود</a>
+        <a href="#sip"><small>۱۱</small>SIP و RTP</a>
+        <a href="#internal"><small>۱۲</small>فقط تماس داخلی</a>
+        <a href="#external" data-external><small>۱۳</small>تماس شهری</a>
+        <a href="#phones"><small>۱۴</small>گوشی SIP معمولی</a>
+        <a href="#cisco"><small>۱۵</small>Cisco 7942 و 7962</a>
+        <a href="#softphone"><small>۱۶</small>سافت‌فون</a>
+        <a href="#firewall"><small>۱۷</small>فایروال سرور</a>
+        <a href="#mikrotik"><small>۱۸</small>فایروال میکروتیک</a>
+        <a href="#keep"><small>۱۹</small>بعد از نصب</a>
+        <a href="#fix"><small>۲۰</small>اگر کار نکرد</a>
+        <a href="#done"><small>۲۱</small>تحویل</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <button class="menu" type="button" id="open-nav">فهرست فصل‌ها</button>
+      <header class="hero" id="start">
+        <p class="eyebrow">راهنمای نصب · نسخه روی خود سرور</p>
+        <h1>از سیستم‌عامل خام تا اولین زنگ</h1>
+        <p class="lead">این صفحه برای کسی است که CIWA را ندیده. هر فصل را به ترتیب انجام دهید. دستورها را همان‌طور که هست کپی کنید و فقط آدرس‌های نمونه را با شبکه خودتان عوض کنید.</p>
+        <div class="chips">
+          <span class="chip">زمان تقریبی: ۲ تا ۴ ساعت</span>
+          <span class="chip">سیستم‌عامل: Debian 12 یا Ubuntu 24.04</span>
+          <span class="chip">پنل: پورت 8080</span>
+          <span class="chip">تلفن: SIP و Cisco 7942 / 7962</span>
+        </div>
+        <div class="paths">
+          <button class="path on" type="button" data-pick="internal">
+            <strong>مسیر الف · فقط داخل شرکت</strong>
+            <span>داخلی‌ها به هم زنگ می‌زنند. خط مخابرات و اینترنت لازم نیست.</span>
+          </button>
+          <button class="path" type="button" data-pick="external">
+            <strong>مسیر ب · داخل شرکت و خط شهری</strong>
+            <span>همان مسیر الف، به‌علاوه ترانک، مسیر خروجی، مسیر ورودی و NAT.</span>
+          </button>
+        </div>
+      </header>
+
+      <section id="words">
+        <h2><span class="num">۰۲</span>کلمه‌هایی که در این راهنما می‌آیند</h2>
+        <table>
+          <thead><tr><th>کلمه</th><th>معنی عملی</th></tr></thead>
+          <tbody>
+            <tr><td>داخلی</td><td>شماره یک نفر داخل شرکت، مثلاً 101. گوشی با همین شماره و یک رمز روی سرور ثبت می‌شود.</td></tr>
+            <tr><td>ترانک</td><td>خطی که سرور را به مخابرات یا شرکت SIP وصل می‌کند. برای تماس داخل شرکت لازم نیست.</td></tr>
+            <tr><td>SIP</td><td>زبانی که گوشی با آن زنگ را شروع می‌کند. روی این نرم‌افزار پورت UDP شماره 5060 است.</td></tr>
+            <tr><td>RTP</td><td>خود صدا. UDP از 10000 تا 20000. اگر بسته باشد زنگ می‌خورد و صدا نمی‌آید.</td></tr>
+            <tr><td>TFTP</td><td>روش گرفتن فایل تنظیم برای Cisco 7942 و 7962. پورت UDP شماره 69.</td></tr>
+            <tr><td>AMI</td><td>رابط مدیریت Asterisk برای خود پنل. پورت TCP شماره 5038. فقط روی سرور می‌ماند.</td></tr>
+          </tbody>
+        </table>
+        <div class="warn">در همه مثال‌ها سرور <code>192.168.88.10</code> و شبکه تلفن‌ها <code>192.168.88.0/24</code> است. قبل از ذخیره، این دو را با آدرس واقعی شرکت عوض کنید.</div>
+      </section>
+
+      <section id="hardware">
+        <h2><span class="num">۰۳</span>سیستم و شبکه را آماده کنید</h2>
+        <div class="grid2">
+          <div>
+            <h3>حداقل سخت‌افزار</h3>
+            <ul class="clean">
+              <li>۴ هسته پردازنده</li>
+              <li>۸ گیگابایت RAM</li>
+              <li>۶۰ گیگابایت دیسک خالی</li>
+              <li>یک کارت شبکه</li>
+            </ul>
+          </div>
+          <div>
+            <h3>اگر سرور مجازی است</h3>
+            <p>کارت شبکه باید Bridge باشد تا گوشی‌ها خود سرور را ببینند. NAT ماشین مجازی برای مرکز تلفن مناسب نیست.</p>
+          </div>
+        </div>
+        <p>یک آدرس ثابت برای سرور انتخاب کنید که داخل DHCP به دستگاه دیگری داده نشود. در میکروتیک این آدرس را از استخر DHCP خارج کنید، یا یک رزرو بسازید.</p>
+        <table>
+          <thead><tr><th>نقش</th><th>نمونه</th></tr></thead>
+          <tbody>
+            <tr><td>آدرس سرور</td><td>192.168.88.10/24</td></tr>
+            <tr><td>درگاه (میکروتیک)</td><td>192.168.88.1</td></tr>
+            <tr><td>شبکه گوشی‌ها</td><td>192.168.88.0/24</td></tr>
+            <tr><td>نام میزبان</td><td>ciwa</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="os">
+        <h2><span class="num">۰۴</span>نصب سیستم‌عامل</h2>
+        <p>Debian 12 را نصب کنید. Ubuntu 24.04 Server هم کار می‌کند؛ ساخت Asterisk داخل کانتینر انجام می‌شود و به دسکتاپ نیاز ندارد.</p>
+        <ol class="steps">
+          <li>فایل نصب شبکه Debian 12 نسخه amd64 را از debian.org بگیرید.</li>
+          <li>با Rufus در ویندوز، یا با <code>dd</code> در لینوکس، آن را روی فلش بنویسید و از فلش بوت کنید.</li>
+          <li>Graphical install را بزنید. زبان نصب را English بگذارید تا اسم گزینه‌ها با این راهنما یکی باشد. کشور را Iran و ساعت را Tehran انتخاب کنید.</li>
+          <li>نام میزبان را <code>ciwa</code> بگذارید. دامنه را می‌توانید <code>local</code> بنویسید.</li>
+          <li>برای root یک رمز قوی بگذارید. بعد یک کاربر معمولی بسازید، مثلاً <code>ciwa</code>. رمز این کاربر را جایی امن یادداشت کنید؛ با همین کاربر ادامه می‌دهیم.</li>
+          <li>دیسک: Guided, use entire disk. این دیسک فقط برای مرکز تلفن است. اگر داده دیگری رویش هست، این گزینه آن را پاک می‌کند.</li>
+          <li>در انتخاب نرم‌افزار فقط SSH server و standard system utilities را علامت بزنید. محیط گرافیکی نصب نکنید.</li>
+          <li>نصب که تمام شد فلش را بیرون بیاورید و reboot کنید. با کاربر <code>ciwa</code> وارد شوید.</li>
+        </ol>
+        <div class="note">اگر Debian به کاربر شما sudo نداده، یک بار با root وارد شوید و این دو دستور را بزنید، بعد خارج شوید و دوباره با کاربر ciwa وارد شوید: <code>apt install -y sudo</code> و <code>usermod -aG sudo ciwa</code>.</div>
+        <p class="quiet">از این‌جا به بعد همه دستورها را در همین سرور، داخل ترمینال SSH، اجرا کنید. از کامپیوتر خودتان: <code>ssh ciwa@192.168.88.10</code></p>
+      </section>
+
+      <section id="prepare">
+        <h2><span class="num">۰۵</span>آدرس ثابت و به‌روزرسانی</h2>
+        <p>اول اسم کارت شبکه را ببینید. معمولاً <code>eth0</code> یا چیزی مثل <code>ens18</code> است.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>ip -br link</code></pre></div>
+        <h3>Debian</h3>
+        <p>فایل <code>/etc/network/interfaces</code> را با نام کارت خودتان این‌طور بنویسید. اگر کارت <code>ens18</code> است، همان را به‌جای eth0 بگذارید.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo tee /etc/network/interfaces &gt;/dev/null &lt;&lt;'EOF'
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+    address 192.168.88.10/24
+    gateway 192.168.88.1
+    dns-nameservers 192.168.88.1 1.1.1.1
+EOF
+sudo systemctl restart networking || sudo reboot</code></pre></div>
+        <details>
+          <summary>اگر Ubuntu 24.04 نصب کرده‌اید</summary>
+          <p>به‌جای فایل بالا، Netplan را بنویسید. نام فایل داخل <code>/etc/netplan/</code> را با <code>ls /etc/netplan</code> ببینید.</p>
+          <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo tee /etc/netplan/01-ciwa.yaml &gt;/dev/null &lt;&lt;'EOF'
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses: [192.168.88.10/24]
+      routes:
+        - to: default
+          via: 192.168.88.1
+      nameservers:
+        addresses: [192.168.88.1, 1.1.1.1]
+EOF
+sudo netplan apply</code></pre></div>
+        </details>
+        <p>بعد از برگشتن شبکه، این‌ها را بزنید. خروجی <code>ip -4 addr</code> باید 192.168.88.10 را نشان بدهد.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo apt update
+sudo apt full-upgrade -y
+sudo timedatectl set-timezone Asia/Tehran
+sudo apt install -y curl ca-certificates git</code></pre></div>
+      </section>
+
+      <section id="packages">
+        <h2><span class="num">۰۶</span>نصب Docker و Node.js</h2>
+        <p>پنل، پایگاه داده و Asterisk با Docker اجرا می‌شوند. Node روی خود سرور فقط برای TFTP گوشی‌های سیسکو لازم است. اگر سیسکو ندارید، Node را باز هم نصب کنید تا بعداً مجبور به برگشتن نشوید.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo apt install -y docker.io docker-compose-v2
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+node -v
+docker --version
+docker compose version</code></pre></div>
+        <div class="warn">عضویت در گروه docker بعد از یک خروج و ورود دوباره به SSH اعمال می‌شود. همین حالا از SSH خارج شوید و دوباره وصل شوید، وگرنه دستورهای بعدی خطای permission می‌دهند.</div>
+      </section>
+
+      <section id="app">
+        <h2><span class="num">۰۷</span>گرفتن نرم‌افزار و ساخت فایل محیط</h2>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo mkdir -p /opt/ciwa
+sudo chown "$USER:$USER" /opt/ciwa
+git clone https://github.com/Hosseinmehrjoo/ciwatelecom.git /opt/ciwa
+cd /opt/ciwa
+test -f core/asterisk/configure && echo "سورس Asterisk هست"
+cp .env.example .env
+chmod +x scripts/install/*.sh</code></pre></div>
+        <p>اگر جمله «سورس Asterisk هست» چاپ نشد، مخزن ناقص کپی شده و فصل بعد شروع نمی‌شود. کل مخزن را دوباره بگیرید.</p>
+        <p>فایل <code>/opt/ciwa/.env</code> را باز کنید و این مقدارها را بگذارید. رمز پایگاه را یک رشته بلند و تصادفی بگذارید و همان را جای <code>changeme</code> بنویسید.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>CIWA_ENV=production
+CIWA_API_PORT=8788
+CIWA_HTTP_PORT=8080
+CIWA_DB_NAME=ciwa_telecom
+CIWA_DB_USER=ciwa
+CIWA_DB_PASSWORD=یک-رمز-بلند
+AMI_HOST=host.docker.internal
+AMI_PORT=5038
+AMI_USERNAME=ciwa
+AMI_SECRET=ciwa</code></pre></div>
+        <div class="note">رمز AMI همین‌جا باید با رمزی که بعداً در پنل، بخش AMI، ذخیره می‌کنید یکی باشد. پیش‌فرض هر دو <code>ciwa</code> است. اگر یکی را عوض کردید، هر دو را عوض کنید و سرویس API را دوباره راه بیندازید.</div>
+      </section>
+
+      <section id="asterisk">
+        <h2><span class="num">۰۸</span>ساخت و اجرای Asterisk</h2>
+        <p>این مرحله طولانی است و به اینترنت نیاز دارد. بسته به سرعت سرور بین ۲۰ تا ۹۰ دقیقه طول می‌کشد. پوشه <code>core/asterisk</code> را دستی ویرایش نکنید؛ پنل فایل‌های <code>config/asterisk</code> را می‌سازد.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>cd /opt/ciwa
+./scripts/install/build-asterisk-docker.sh
+./scripts/install/start-asterisk.sh</code></pre></div>
+        <p>دستور دوم باید نسخه Asterisk را چاپ کند و این جمله را بدهد: <code>ciwa-asterisk is running</code>. اگر کانتینر همان لحظه بسته شد، آخر لاگ را بخوانید:</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>docker logs ciwa-asterisk --tail 80</code></pre></div>
+        <p>این سرویس با شبکه خود سرور بالا می‌آید، نه داخل شبکه داخلی Docker. به همین خاطر SIP، صدا، سافت‌فون و AMI روی خود ماشین شنیده می‌شوند و با ری‌استارت Docker دوباره برمی‌گردند.</p>
+      </section>
+
+      <section id="panel">
+        <h2><span class="num">۰۹</span>بالا آوردن پنل، API و پایگاه داده</h2>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>cd /opt/ciwa
+docker compose up -d --build
+docker compose ps</code></pre></div>
+        <p>سه سرویس باید در حالت running باشند: <code>postgres</code>، <code>api</code> و <code>web</code>. اولین ساخت image چند دقیقه طول می‌کشد.</p>
+        <p>در مرورگر یک کامپیوتر داخل همان شبکه باز کنید:</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>http://192.168.88.10:8080</code></pre></div>
+        <div class="stop">پورت پنل 8080 است. پورت 5173 فقط برای حالت توسعه است و در نصب شرکت استفاده نمی‌شود. پورت 3000 مال این نرم‌افزار نیست.</div>
+      </section>
+
+      <section id="login">
+        <h2><span class="num">۱۰</span>ورود و عوض کردن رمز</h2>
+        <ol class="steps">
+          <li>نام کاربری <code>admin</code> و رمز <code>admin</code>.</li>
+          <li>همان لحظه رمز را عوض کنید. پنجره تغییر رمز اگر نیامد، از منوی «مدیریت سامانه» رمز مدیر را عوض کنید.</li>
+          <li>از منوی سیستم، «وضعیت هسته» را باز کنید. اتصال AMI باید برقرار باشد. اگر نبود، یک داخلی آزمایشی ذخیره کنید تا پیکربندی دوباره ساخته شود، بعد <code>docker restart ciwa-asterisk</code> و <code>docker compose restart api</code> را بزنید.</li>
+        </ol>
+        <p>منو چهار گروه دارد: داشبورد، مرکز تلفن، گزارش و مانیتور، سیستم و هسته. نصب را از «سیستم و هسته» شروع کنید، بعد بروید سراغ داخلی‌ها.</p>
+      </section>
+
+      <section id="sip">
+        <h2><span class="num">۱۱</span>تنظیم SIP / RTP</h2>
+        <p>از منو <b>SIP / RTP</b> را باز کنید و ذخیره کنید. UDP باید روشن باشد. TCP را خاموش بگذارید.</p>
+        <table>
+          <thead><tr><th>فیلد پنل</th><th>فقط تماس داخلی</th><th>تماس داخلی و شهری</th></tr></thead>
+          <tbody>
+            <tr><td>IP گوش‌دادن</td><td>0.0.0.0</td><td>0.0.0.0</td></tr>
+            <tr><td>پورت SIP</td><td>5060</td><td>5060</td></tr>
+            <tr><td>شروع RTP</td><td>10000</td><td>10000</td></tr>
+            <tr><td>پایان RTP</td><td>20000</td><td>20000</td></tr>
+            <tr><td>IP خارجی (NAT)</td><td>خالی</td><td>آدرس عمومی شرکت</td></tr>
+            <tr><td>آدرس سرور برای گوشی سیسکو</td><td>192.168.88.10</td><td>192.168.88.10</td></tr>
+            <tr><td>نام فریم‌ور SIP42</td><td>SIP42.9-4-2SR3-1S</td><td>همان، مگر فایل دیگری داشته باشید</td></tr>
+            <tr><td>شبکه‌های محلی</td><td>192.168.88.0/24</td><td>رنج واقعی شرکت</td></tr>
+          </tbody>
+        </table>
+        <div class="warn">اگر «IP خارجی» را در نصب فقط داخلی پر کنید، گوشی‌ها صدا را به یک آدرس بیرون از شبکه می‌فرستند و تماس بی‌صدا می‌شود. در مسیر الف این فیلد خالی می‌ماند. صدا همیشه از خود سرور رد می‌شود؛ گوشی‌ها مستقیم به هم صدا نمی‌فرستند.</div>
+      </section>
+
+      <section id="internal">
+        <h2><span class="num">۱۲</span>مسیر الف · فقط تماس داخلی</h2>
+        <p>ترانک، مسیر خروجی و مسیر ورودی نسازید. خط شهری در این مسیر وجود ندارد.</p>
+        <ol class="steps">
+          <li>منو: <b>داخلی‌ها</b>. دکمه ساخت را بزنید.</li>
+          <li>شماره داخلی، مثلاً 101. نام نمایشی، مثلاً نام شخص.</li>
+          <li>نوع گوشی: برای تلفن رومیزی Yealink و مشابه آن «تلفن SIP معمولی». برای 7942 یا 7962 همان مدل سیسکو. برای سافت‌فون داخل پنل «سافت‌فون / WebRTC».</li>
+          <li>رمز SIP را جدا از شماره انتخاب کنید. این رمز را روی گوشی هم وارد می‌کنید.</li>
+          <li>ذخیره. برای نفر دوم شماره 102 را همین‌طور بسازید.</li>
+        </ol>
+        <p>از گوشی 101 شماره 102 را بگیرید. هر دو طرف باید زنگ و صدا داشته باشند. اگر فقط زنگ هست، فصل «اگر کار نکرد» را ببینید؛ معمولاً SIP ALG یا بسته بودن RTP است.</p>
+        <div class="note">صندوق صوتی اگر در فرم داخلی روشن باشد، بعد از تمام شدن مهلت زنگ، تماس بی‌پاسخ به صندوق می‌رود. دکمه پیام گوشی سیسکو در این نسخه یک کد جدا در شماره‌گیری نمی‌سازد.</div>
+      </section>
+
+      <section id="external" data-external>
+        <h2><span class="num">۱۳</span>مسیر ب · تماس داخلی و شهری</h2>
+        <p>اول مسیر الف را تا زنگ خوردن دو داخلی تمام کنید. بعد این فصل را انجام دهید. از شرکت مخابرات یا فروشنده SIP این‌ها را کتبی بگیرید: آدرس سرور SIP، پورت، نام کاربری، رمز، شماره Caller ID، و شکل دقیق شماره‌ای که در تماس ورودی می‌فرستند.</p>
+        <h3>۱. ترانک</h3>
+        <p>منو: <b>ترانک‌ها</b>.</p>
+        <table>
+          <thead><tr><th>فیلد</th><th>نمونه</th><th>توضیح</th></tr></thead>
+          <tbody>
+            <tr><td>شناسه</td><td>city</td><td>فقط حروف انگلیسی. همین را در مسیر خروجی می‌نویسید.</td></tr>
+            <tr><td>نام</td><td>خط شهری</td><td>برای نمایش در پنل.</td></tr>
+            <tr><td>میزبان</td><td>sip.provider.example</td><td>آدرسی که فروشنده داده.</td></tr>
+            <tr><td>پورت</td><td>5060</td><td>اگر عدد دیگری دادند، همان.</td></tr>
+            <tr><td>نام کاربری و رمز</td><td>از قرارداد</td><td>اگر خط فقط با IP شما باز می‌شود و رمز ندارد، هر دو را خالی بگذارید.</td></tr>
+            <tr><td>Caller ID خروجی</td><td>02112345678</td><td>شماره‌ای که طرف مقابل باید ببیند.</td></tr>
+            <tr><td>ثبت‌نام SIP</td><td>روشن</td><td>برای ترانک معمولی روشن است. برای خط بدون رمز، خاموش.</td></tr>
+          </tbody>
+        </table>
+        <h3>۲. مسیر خروجی</h3>
+        <p>منو: <b>مسیر خروجی</b>. شماره‌ای که کاربر می‌گیرد عیناً به ترانک فرستاده می‌شود. این نسخه رقم اول را خودش حذف نمی‌کند. اگر مخابرات شماره را با صفر می‌خواهد، الگو را طوری بگذارید که کاربر همان را بگیرد.</p>
+        <table>
+          <thead><tr><th>فیلد</th><th>مقدار</th></tr></thead>
+          <tbody>
+            <tr><td>شناسه</td><td>out-city</td></tr>
+            <tr><td>نام</td><td>تماس بیرون</td></tr>
+            <tr><td>الگو</td><td><code>_0X.</code></td></tr>
+            <tr><td>شناسه ترانک</td><td>city</td></tr>
+            <tr><td>مهلت</td><td>60</td></tr>
+          </tbody>
+        </table>
+        <p class="quiet"><code>_0X.</code> یعنی هر شماره‌ای که با صفر شروع شود و بعدش رقم داشته باشد: موبایل، شهر و بین‌الملل. <code>X</code> یک رقم است و نقطه یعنی «ادامه».</p>
+        <h3>۳. مسیر ورودی</h3>
+        <p>منو: <b>مسیر ورودی</b>. فیلد DID باید دقیقاً همان رشته‌ای باشد که مخابرات می‌فرستد. یک بار از موبایل به خط شرکت زنگ بزنید و در «گزارش تماس» یا «مانیتور زنده» ببینید شماره چطور آمده: با 0، بدون 0، یا با 98.</p>
+        <table>
+          <thead><tr><th>فیلد</th><th>نمونه</th></tr></thead>
+          <tbody>
+            <tr><td>شناسه</td><td>in-main</td></tr>
+            <tr><td>نام</td><td>شماره اصلی</td></tr>
+            <tr><td>شماره DID</td><td>همان رشته‌ای که در گزارش دیدید</td></tr>
+            <tr><td>نوع مقصد</td><td>extension</td></tr>
+            <tr><td>مقصد</td><td>101</td></tr>
+          </tbody>
+        </table>
+        <p>نوع مقصد می‌تواند <code>queue</code>، <code>ivr</code> یا <code>time-condition</code> هم باشد. برای اولین تحویل، یک داخلی کافی است. ساعت اداری را بعداً از «زمان‌بندی» با روزهای <code>sat,sun,mon,tue,wed</code> و بازه <code>09:00-17:00</code> اضافه کنید.</p>
+        <h3>۴. چیزی که باید از بیرون به سرور برسد</h3>
+        <p>در میکروتیک، UDP پورت 5060 و UDP از 10000 تا 20000 را فقط به 192.168.88.10 فوروارد کنید. پنل، TFTP و پورت 5038 را به اینترنت راه ندهید. در فصل میکروتیک دستور آماده‌اش هست.</p>
+        <p>در SIP / RTP فیلد «IP خارجی» را برابر آدرس عمومی ثابت شرکت بگذارید. گوشی‌های داخل شبکه هم در این حالت صدا را به همان آدرس عمومی می‌فرستند، پس میکروتیک باید NAT برگشتی (hairpin) داشته باشد. بدون آن، تماس شهری درست می‌شود و تماس داخلی بی‌صدا می‌شود، یا برعکس.</p>
+        <h3>۵. آزمون</h3>
+        <ol class="steps">
+          <li>از 101 یک موبایل را با صفر اول بگیرید. زنگ و صدای دوطرفه.</li>
+          <li>از همان موبایل به DID زنگ بزنید. داخلی 101 زنگ بخورد و صدا دوطرفه باشد.</li>
+          <li>باز هم 101 به 102 زنگ بزند تا مطمئن شوید مسیر شهری، داخلی را خراب نکرده.</li>
+        </ol>
+        <div class="note">کدک گوشی رومیزی و سیسکو در این نرم‌افزار ulaw و alaw است. اگر فروشنده فقط G.729 بخواهد، این نصب آن را پیشنهاد نمی‌کند؛ از فروشنده alaw بخواهید.</div>
+      </section>
+
+      <section id="phones">
+        <h2><span class="num">۱۴</span>گوشی SIP معمولی</h2>
+        <p>Yealink، Grandstream، Fanvil و بقیه گوشی‌هایی که صفحه وب دارند. نوع گوشی در پنل باید «تلفن SIP معمولی» باشد.</p>
+        <table>
+          <thead><tr><th>فیلد گوشی</th><th>مقدار</th></tr></thead>
+          <tbody>
+            <tr><td>SIP Server</td><td>192.168.88.10</td></tr>
+            <tr><td>Port</td><td>5060</td></tr>
+            <tr><td>Transport</td><td>UDP</td></tr>
+            <tr><td>Username / Auth ID</td><td>101</td></tr>
+            <tr><td>Password</td><td>رمز SIP همان داخلی</td></tr>
+            <tr><td>Outbound proxy</td><td>خالی</td></tr>
+          </tbody>
+        </table>
+        <p>وضعیت حساب باید Registered شود. بعد 102 را بگیرید.</p>
+      </section>
+
+      <section id="cisco">
+        <h2><span class="num">۱۵</span>Cisco 7942 و 7962</h2>
+        <p>این دو مدل تنظیم را از صفحه وب نمی‌گیرند. با TFTP فایل <code>SEP</code> و مک‌آدرس خودشان را می‌خوانند. هر دو از خانواده فریم‌ور SIP42 هستند. فریم‌ور باید SIP باشد. اگر گوشی هنوز SCCP است و فقط دنبال Call Manager می‌گردد، تا وقتی فایل‌های SIP را از TFTP نگیرد روی این مرکز ثبت نمی‌شود.</p>
+        <h3>۱. فایل فریم‌ور</h3>
+        <p>بسته SIP42 را که لایسنس آن را دارید داخل <code>/opt/ciwa/tftp/</code> کپی کنید. نام فایل <code>.loads</code> باید با فیلد «نام فریم‌ور SIP42» در پنل یکی باشد. پیش‌فرض نرم‌افزار این است:</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>SIP42.9-4-2SR3-1S</code></pre></div>
+        <p>کنار آن، فایل‌های <code>.sbn</code> و <code>.loads</code> همان بسته (از جمله term42 برای 7942 و term62 برای 7962) باید در همین پوشه باشند. نرم‌افزار این فایل‌ها را نمی‌سازد و همراه مخزن نیستند.</p>
+        <h3>۲. داخلی در پنل</h3>
+        <ol class="steps">
+          <li>نوع گوشی را Cisco 7942 یا Cisco 7962 بگذارید.</li>
+          <li>مک‌آدرس ۱۲ رقمی را بدون دونقطه وارد کنید، مثلاً <code>001122334455</code>. مک پشت گوشی یا روی برچسب است.</li>
+          <li>ذخیره کنید. فایل <code>/opt/ciwa/tftp/SEP001122334455.cnf.xml</code> و <code>dialplan.xml</code> ساخته می‌شوند. نام فایل مک را با حروف بزرگ می‌نویسد.</li>
+          <li>در SIP / RTP، «آدرس سرور برای گوشی سیسکو» باید IP سرور در LAN باشد، نه اسم دامنه و نه IP عمومی.</li>
+        </ol>
+        <h3>۳. سرویس TFTP</h3>
+        <p>پورت 69 فقط با دسترسی root باز می‌شود. این واحد systemd را بسازید تا بعد از قطع برق هم بالا بیاید.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo tee /etc/systemd/system/ciwa-tftp.service &gt;/dev/null &lt;&lt;'EOF'
+[Unit]
+Description=CIWA Cisco TFTP
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/ciwa
+ExecStart=/usr/bin/node /opt/ciwa/backend/services/asterisk/tftpServer.js /opt/ciwa/tftp 69
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload
+sudo systemctl enable --now ciwa-tftp
+sudo ss -ulpn | grep ':69'</code></pre></div>
+        <p>باید ببینید Node روی <code>0.0.0.0:69</code> گوش می‌دهد. لاگ درخواست گوشی: <code>journalctl -u ciwa-tftp -f</code></p>
+        <h3>۴. DHCP گزینه 150</h3>
+        <p>سیسکو آدرس سرور TFTP را از گزینه 150 می‌گیرد. مقدارش چهار بایت آدرس سرور است، نه متن. برای 192.168.88.10 می‌شود <code>0xC0A8580A</code>. آدرس خودتان را این‌جا حساب کنید.</p>
+        <div class="tool">
+          <label>آدرس سرور در شبکه داخلی
+            <input id="lan-ip" value="192.168.88.10" inputmode="decimal" autocomplete="off">
+          </label>
+          <label>شبکه DHCP
+            <input id="lan-net" value="192.168.88.0/24" autocomplete="off">
+          </label>
+          <p id="opt150" class="mono" style="direction:ltr;text-align:left;margin:0"></p>
+        </div>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre id="mt-dhcp"><code></code></pre></div>
+        <h3>۵. ریست گوشی</h3>
+        <ol class="steps">
+          <li>برق را بکشید. دکمه <code>#</code> را نگه دارید و برق را وصل کنید تا چراغ دکمه‌های خط چشمک بزند.</li>
+          <li><code>#</code> را رها کنید و <code>123456789*0#</code> را وارد کنید. گوشی به تنظیم کارخانه برمی‌گردد و از DHCP گزینه 150 را می‌خواند.</li>
+          <li>در لاگ TFTP باید درخواست <code>SEP&lt;MAC&gt;.cnf.xml</code> و بعد فایل‌های فریم‌ور را ببینید.</li>
+          <li>بعد از بالا آمدن، داخلی روی سرور Registered می‌شود. از همان گوشی یک داخلی دیگر را بگیرید.</li>
+        </ol>
+        <div class="warn">اگر مک در پنل بعد از بوت گوشی ذخیره شود، گوشی فایل را پیدا نمی‌کند. اول فایل SEP را بسازید، بعد گوشی را ریست کنید. TFTP را به اینترنت باز نکنید.</div>
+      </section>
+
+      <section id="softphone">
+        <h2><span class="num">۱۶</span>سافت‌فون داخل پنل</h2>
+        <p>نوع داخلی را «سافت‌فون / WebRTC» بگذارید. مرورگر باید به پورت TCP شماره 8089 همان سرور برسد. این پورت WebSocket امن Asterisk است و جدا از پنل 8080 است. برای کار روزمره دفتر، تلفن رومیزی کافی است.</p>
+      </section>
+
+      <section id="firewall">
+        <h2><span class="num">۱۷</span>فایروال خود سرور</h2>
+        <p>دو لایه دارید. لایه قابل اعتماد برای دفتر، میکروتیک است، چون جلوی کل شبکه ایستاده. لایه دوم روی خود سرور است و سرویس‌هایی را می‌بندد که مستقیم روی ماشین گوش می‌دهند: SIP، RTP، TFTP، سافت‌فون و AMI.</p>
+        <p>پنل در منوی <b>فایروال</b> قانون را ذخیره می‌کند و فایل <code>config/ciwa/firewall.nft</code> را می‌سازد. دکمه «اعمال فایروال» داخل کانتینر معمولاً دسترسی root میزبان را ندارد. بعد از چیدن قانون‌ها در پنل، روی خود سرور این را بزنید:</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo nft -f /opt/ciwa/config/ciwa/firewall.nft
+sudo nft list table inet ciwa_filter</code></pre></div>
+        <p>در فرم پنل، پروتکل را <code>udp</code> یا <code>tcp</code> بنویسید. منبع را <code>any</code> نگذارید مگر واقعاً لازم باشد. این قانون‌ها برای مسیر داخلی کافی‌اند. منبع را با شبکه خودتان عوض کنید.</p>
+        <table>
+          <thead><tr><th>پروتکل</th><th>پورت</th><th>منبع</th><th>عمل</th><th>توضیح</th></tr></thead>
+          <tbody>
+            <tr><td>tcp</td><td>22</td><td>192.168.88.0/24</td><td>accept</td><td>SSH مدیران</td></tr>
+            <tr><td>udp</td><td>5060</td><td>192.168.88.0/24</td><td>accept</td><td>SIP گوشی‌ها</td></tr>
+            <tr><td>udp</td><td>10000-20000</td><td>192.168.88.0/24</td><td>accept</td><td>صدای تماس</td></tr>
+            <tr><td>udp</td><td>69</td><td>192.168.88.0/24</td><td>accept</td><td>TFTP سیسکو</td></tr>
+            <tr><td>tcp</td><td>8089</td><td>192.168.88.0/24</td><td>accept</td><td>سافت‌فون</td></tr>
+            <tr><td>tcp</td><td>5038</td><td>127.0.0.1</td><td>accept</td><td>AMI فقط خود سرور</td></tr>
+          </tbody>
+        </table>
+        <p>سیاست ورودی را drop بگذارید. سیاست خروجی accept بماند. برای مسیر شهری، یک قانون UDP به پورت 5060 اضافه کنید که منبعش فقط IP شرکت SIP باشد، نه کل اینترنت.</p>
+        <div class="warn">Docker پورت 8080 پنل را از زنجیره معمولی ورودی رد می‌کند. بستن 8080 فقط در nft جلوی پنل را نمی‌گیرد. پنل را در میکروتیک محدود کنید. پورت API یعنی 8788 را اصلاً به شبکه نشان ندهید؛ مرورگر از خود 8080 به API می‌رسد. اگر 8788 در <code>docker compose ps</code> روی 0.0.0.0 منتشر شده، در میکروتیک به آن allow ندهید.</div>
+        <p>این قانون انتشار Docker را به شبکه تلفن محدود می‌کند. نام اینترفیس را اگر eth0 نیست عوض کنید.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo iptables -I DOCKER-USER -i eth0 -p tcp --dport 8788 -j DROP
+sudo iptables -I DOCKER-USER -i eth0 -s 192.168.88.0/24 -p tcp --dport 8080 -j ACCEPT
+sudo iptables -I DOCKER-USER -i eth0 -p tcp --dport 8080 -j DROP</code></pre></div>
+        <p class="quiet">این سه خط تا ری‌استارت بعدی می‌مانند. برای دفتر، همان قانون میکروتیک را دائمی حساب کنید و این را لایه اضافه بدانید.</p>
+      </section>
+
+      <section id="mikrotik">
+        <h2><span class="num">۱۸</span>فایروال میکروتیک</h2>
+        <p>اول SIP ALG را خاموش کنید. اگر روشن بماند زنگ می‌خورد و صدا خراب می‌شود.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall service-port
+set sip disabled=yes</code></pre></div>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall address-list
+add list=ciwa-pbx address=192.168.88.10 comment="CIWA server"
+add list=ciwa-phones address=192.168.88.0/24 comment="IP phones"
+add list=ciwa-admins address=192.168.88.0/24 comment="panel users"</code></pre></div>
+        <p>اگر چند VLAN دارید، هر رنج را یک خط جدا به <code>ciwa-phones</code> اضافه کنید. قانون‌های زیر را بالاتر از drop عمومی بگذارید.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall filter
+add chain=forward action=accept connection-state=established,related comment="ciwa established"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-phones dst-address-list=ciwa-pbx protocol=udp dst-port=69 comment="ciwa TFTP"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-phones dst-address-list=ciwa-pbx protocol=udp dst-port=5060 comment="ciwa SIP"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-pbx dst-address-list=ciwa-phones protocol=udp src-port=5060 comment="ciwa SIP reply"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-phones dst-address-list=ciwa-pbx protocol=udp dst-port=10000-20000 comment="ciwa RTP to server"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-pbx dst-address-list=ciwa-phones protocol=udp src-port=10000-20000 comment="ciwa RTP to phones"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-admins dst-address-list=ciwa-pbx protocol=tcp dst-port=8080 comment="ciwa panel"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-admins dst-address-list=ciwa-pbx protocol=tcp dst-port=8089 comment="ciwa softphone"
+add chain=forward action=drop connection-state=new dst-address-list=ciwa-pbx protocol=udp dst-port=69,5060,10000-20000 in-interface-list=WAN comment="block phone ports from internet"
+add chain=forward action=drop connection-state=new dst-address-list=ciwa-pbx protocol=tcp dst-port=8080,8089,8788,5038 in-interface-list=WAN comment="block panel AMI API from internet"</code></pre></div>
+        <div class="note">اگر اینترفیس اینترنت داخل لیست WAN نیست، به‌جای <code>in-interface-list=WAN</code> بنویسید <code>in-interface=ether1</code> با نام واقعی پورت اینترنت. برای مسیر الف هیچ dst-nat نسازید.</div>
+
+        <div data-external>
+          <h3>فقط وقتی خط شهری دارید</h3>
+          <p><code>1.2.3.4</code> را با IP عمومی ثابت شرکت و <code>203.0.113.10</code> را با IP سرور SIP مخابرات عوض کنید. 203.0.113.10 فقط نمونه است.</p>
+          <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall nat
+add chain=dstnat action=dst-nat protocol=udp dst-address=1.2.3.4 dst-port=5060 to-addresses=192.168.88.10 to-ports=5060 comment="ciwa SIP"
+add chain=dstnat action=dst-nat protocol=udp dst-address=1.2.3.4 dst-port=10000-20000 to-addresses=192.168.88.10 comment="ciwa RTP"
+add chain=srcnat action=masquerade protocol=udp src-address=192.168.88.0/24 dst-address=192.168.88.10 dst-port=5060 comment="ciwa hairpin SIP"
+add chain=srcnat action=masquerade protocol=udp src-address=192.168.88.0/24 dst-address=192.168.88.10 dst-port=10000-20000 comment="ciwa hairpin RTP"
+
+/ip firewall filter
+add chain=forward action=accept connection-state=new protocol=udp dst-address=192.168.88.10 dst-port=5060 src-address=203.0.113.10 comment="SIP only from provider"
+add chain=forward action=accept connection-state=new protocol=udp dst-address=192.168.88.10 dst-port=10000-20000 in-interface-list=WAN comment="RTP from calls"
+add chain=forward action=drop connection-state=new protocol=udp dst-address=192.168.88.10 dst-port=5060 in-interface-list=WAN comment="drop other internet SIP"</code></pre></div>
+          <p>قانون accept مخصوص فروشنده را بالاتر از drop عمومی SIP بگذارید. پورت 8080، 69 و 5038 در dst-nat نیستند و نباید باشند.</p>
+        </div>
+      </section>
+
+      <section id="keep">
+        <h2><span class="num">۱۹</span>بعد از بالا آمدن</h2>
+        <h3>سرویس‌هایی که باید بعد از برق ماندگار باشند</h3>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo systemctl enable docker
+docker update --restart unless-stopped ciwa-asterisk
+cd /opt/ciwa && docker compose up -d
+sudo systemctl enable ciwa-tftp</code></pre></div>
+        <p class="quiet">اگر سیسکو ندارید، واحد TFTP را enable نکنید.</p>
+        <h3>دیدن ثبت گوشی</h3>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>docker exec -e LD_LIBRARY_PATH=/opt/ciwa-asterisk/lib ciwa-asterisk \
+  /opt/ciwa-asterisk/sbin/asterisk -C /etc/asterisk/asterisk.conf \
+  -rx "pjsip show endpoints"</code></pre></div>
+        <p>داخلی ثبت‌شده Contact دارد. در پنل هم «مانیتور زنده» هنگام زنگ، تماس را نشان می‌دهد.</p>
+        <h3>پشتیبان</h3>
+        <p>در «مدیریت سامانه» پشتیبان بگیرید. فایل‌های مهم روی دیسک این‌ها هستند: <code>/opt/ciwa/config</code>، <code>/opt/ciwa/.env</code>، <code>/opt/ciwa/storage</code> و حجم Docker پایگاه. کپی گرفتن از کل <code>/opt/ciwa</code> به‌اضافه <code>docker compose</code> برای یک دفتر کوچک کافی است. رمزها داخل همین پوشه‌اند؛ نسخه پشتیبان را مثل یک رمز عبور نگه دارید.</p>
+        <h3>امکان‌هایی که بعد از تماس اول اضافه می‌کنید</h3>
+        <ul class="clean">
+          <li><b>صف تماس</b>: یک شماره ورود، استراتژی ringall، و عضوهایی مثل 101,102.</li>
+          <li><b>IVR</b>: منوی صوتی. گزینه‌ها را به شکل JSON می‌دهید، مثلاً رقم 1 به داخلی 101.</li>
+          <li><b>گروه زنگ</b>: یک شماره که همزمان چند داخلی را زنگ می‌زند.</li>
+          <li><b>زمان‌بندی</b>: ساعت اداری و مقصد خارج از ساعت.</li>
+          <li><b>کنفرانس</b>: یک شماره ورود و در صورت نیاز یک پین.</li>
+        </ul>
+      </section>
+
+      <section id="fix">
+        <h2><span class="num">۲۰</span>اگر کار نکرد</h2>
+        <table>
+          <thead><tr><th>نشانه</th><th>کار بعدی</th></tr></thead>
+          <tbody>
+            <tr><td>صفحه 8080 باز نمی‌شود</td><td><code>docker compose ps</code> را ببینید. سرویس web باید running باشد. از خود سرور <code>curl -I http://127.0.0.1:8080</code> را بزنید. اگر این‌جا باز شد و از کامپیوتر دیگر نه، فایروال یا VLAN جلوی TCP 8080 را گرفته.</td></tr>
+            <tr><td>رمز admin قبول نمی‌شود</td><td>اگر قبلاً عوض شده، رمز جدید را بزنید. فایل تازه‌ای ساخته نمی‌شود که رمز را به admin برگرداند.</td></tr>
+            <tr><td>وضعیت هسته به AMI وصل نیست</td><td><code>AMI_SECRET</code> در <code>.env</code> باید با رمز AMI در پنل یکی باشد. بعد <code>docker compose restart api</code> و <code>docker restart ciwa-asterisk</code>.</td></tr>
+            <tr><td>گوشی Register نمی‌شود</td><td>IP سرور، پورت 5060، UDP، نام کاربری برابر شماره داخلی، و رمز SIP. در میکروتیک SIP ALG خاموش باشد.</td></tr>
+            <tr><td>زنگ هست، صدا نیست</td><td>UDP از 10000 تا 20000 در هر دو جهت باز باشد. IP خارجی در مسیر داخلی خالی باشد. در مسیر شهری hairpin و dst-nat صدا وجود داشته باشد.</td></tr>
+            <tr><td>سیسکو بالا نمی‌آید</td><td><code>ss</code> پورت 69 را نشان بدهد. گزینه 150 همان IP سرور باشد. فایل <code>SEP</code> قبل از ریست وجود داشته باشد. در لاگ TFTP اسم فایل درخواستی را با محتوای پوشه <code>tftp</code> مقایسه کنید.</td></tr>
+            <tr><td>تماس شهری بیرون نمی‌رود</td><td>شناسه ترانک در مسیر خروجی دقیقاً همان شناسه ترانک باشد. الگو <code>_0X.</code> باشد و کاربر شماره را با صفر گرفته باشد. ثبت‌نام ترانک در وضعیت هسته دیده شود.</td></tr>
+            <tr><td>تماس ورودی زنگ نمی‌خورد</td><td>DID را با رشته‌ای که واقعاً از مخابرات آمده یکی کنید. یک بار با 0، یک بار بدون 0، یک بار با 98 امتحان نکنید؛ گزارش تماس را بخوانید و همان را بنویسید.</td></tr>
+            <tr><td>ساخت Asterisk خطا داد</td><td>اینترنت سرور و فضای دیسک را چک کنید. دستور ساخت را دوباره اجرا کنید. سورس را دستی تغییر ندهید.</td></tr>
+          </tbody>
+        </table>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>cd /opt/ciwa
+docker compose ps
+docker ps --filter name=ciwa-asterisk
+sudo ss -lntup | grep -E ':5060|:8080|:8089|:5038|:69'</code></pre></div>
+      </section>
+
+      <section id="done">
+        <h2><span class="num">۲۱</span>چک‌لیست تحویل</h2>
+        <p class="quiet">علامت‌ها در همین مرورگر می‌مانند.</p>
+        <ul class="checks" id="checks">
+          <li><input type="checkbox" id="c1"><label for="c1">سیستم‌عامل بدون دسکتاپ نصب شده و آدرس سرور ثابت است.</label></li>
+          <li><input type="checkbox" id="c2"><label for="c2">Docker و Node 22 نصب شده و یک بار از SSH خارج و دوباره وارد شده‌ام.</label></li>
+          <li><input type="checkbox" id="c3"><label for="c3"><code>ciwa-asterisk</code> در حال اجراست و نسخه را چاپ کرده.</label></li>
+          <li><input type="checkbox" id="c4"><label for="c4">پنل روی پورت 8080 باز می‌شود و رمز admin عوض شده.</label></li>
+          <li><input type="checkbox" id="c5"><label for="c5">وضعیت هسته به AMI وصل است.</label></li>
+          <li><input type="checkbox" id="c6"><label for="c6">SIP / RTP ذخیره شده و در مسیر داخلی، IP خارجی خالی است.</label></li>
+          <li><input type="checkbox" id="c7"><label for="c7">از 101 به 102 زنگ و صدای دوطرفه هست، و برعکس.</label></li>
+          <li><input type="checkbox" id="c8"><label for="c8">بعد از قطع و وصل برق گوشی، دوباره Registered می‌شود.</label></li>
+          <li data-external><input type="checkbox" id="c9"><label for="c9">ترانک ثبت شده، خروجی با صفر کار می‌کند، ورودی به DID درست زنگ می‌خورد.</label></li>
+          <li><input type="checkbox" id="c10"><label for="c10">SIP ALG میکروتیک خاموش است.</label></li>
+          <li><input type="checkbox" id="c11"><label for="c11">از اینترنت به 8080، 5060، 69 و 5038 دسترسی آزاد نیست.</label></li>
+          <li><input type="checkbox" id="c12"><label for="c12">پورت 5038 در میکروتیک قانون accept ندارد.</label></li>
+          <li><input type="checkbox" id="c13"><label for="c13">اگر سیسکو هست: TFTP بالا است، گزینه 150 درست است، و فایل SEP قبل از ریست ساخته شده.</label></li>
+          <li><input type="checkbox" id="c14"><label for="c14">یک نسخه پشتیبان از /opt/ciwa گرفته شده.</label></li>
+        </ul>
+      </section>
+
+      <footer>
+        CIWA Telecom · این راهنما کنار خود نرم‌افزار در <span class="mono">docs/index.html</span> است.
+        آدرس‌های 192.168.88.10 و 192.168.88.0/24 فقط نمونه‌اند.
+        برای استقرار تولیدی، پشتیبانی از ciwa.ir جدا از خود نرم‌افزار است.
+      </footer>
+    </main>
+  </div>
+  <script>
+    const modeInternal = document.getElementById('mode-internal')
+    const modeExternal = document.getElementById('mode-external')
+    const externalNodes = () => document.querySelectorAll('[data-external]')
+
+    function setMode(mode) {
+      const external = mode === 'external'
+      modeInternal.classList.toggle('active', !external)
+      modeExternal.classList.toggle('active', external)
+      document.querySelectorAll('[data-pick]').forEach((el) => el.classList.toggle('on', el.dataset.pick === mode))
+      externalNodes().forEach((el) => { el.hidden = !external })
+      localStorage.setItem('ciwa-guide-mode', mode)
+      updateProgress()
+    }
+
+    document.querySelectorAll('[data-pick]').forEach((el) => {
+      el.addEventListener('click', () => setMode(el.dataset.pick))
+    })
+    modeInternal.addEventListener('click', () => setMode('internal'))
+    modeExternal.addEventListener('click', () => setMode('external'))
+
+    const checks = [...document.querySelectorAll('#checks input')]
+    function updateProgress() {
+      const visible = checks.filter((box) => !box.hidden && !box.closest('[hidden]'))
+      const done = visible.filter((box) => box.checked).length
+      const pct = visible.length ? Math.round((done / visible.length) * 100) : 0
+      document.getElementById('progress-text').textContent = pct.toLocaleString('fa-IR') + '٪'
+      document.getElementById('progress-bar').style.width = pct + '%'
+    }
+    checks.forEach((box) => {
+      const saved = localStorage.getItem('ciwa-guide-' + box.id)
+      if (saved === '1') box.checked = true
+      box.addEventListener('change', () => {
+        localStorage.setItem('ciwa-guide-' + box.id, box.checked ? '1' : '0')
+        updateProgress()
+      })
+    })
+
+    document.querySelectorAll('.copy').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const code = button.parentElement.querySelector('code')
+        const text = code.innerText.replace(/\n$/, '')
+        try {
+          await navigator.clipboard.writeText(text)
+          button.textContent = 'کپی شد'
+        } catch {
+          button.textContent = 'دستی کپی کنید'
+        }
+        setTimeout(() => { button.textContent = 'کپی' }, 1400)
+      })
+    })
+
+    const lanIp = document.getElementById('lan-ip')
+    const lanNet = document.getElementById('lan-net')
+    const optOut = document.getElementById('opt150')
+    const dhcpCode = document.querySelector('#mt-dhcp code')
+    function refreshDhcp() {
+      const parts = lanIp.value.trim().split('.').map((n) => Number(n))
+      const ok = parts.length === 4 && parts.every((n) => Number.isInteger(n) && n >= 0 && n <= 255)
+      const hex = ok ? '0x' + parts.map((n) => n.toString(16).padStart(2, '0')).join('').toUpperCase() : 'آدرس کامل نیست'
+      const net = lanNet.value.trim() || '192.168.88.0/24'
+      optOut.textContent = ok ? hex + '   ← گزینه 150 برای ' + lanIp.value.trim() : hex
+      dhcpCode.textContent = ok
+        ? '/ip dhcp-server option\nadd code=150 name=ciwa-tftp value=' + hex + '\n/ip dhcp-server network\nset [find address=' + net + '] dhcp-option=ciwa-tftp'
+        : 'اول یک IPv4 کامل بنویسید.'
+    }
+    lanIp.addEventListener('input', refreshDhcp)
+    lanNet.addEventListener('input', refreshDhcp)
+    refreshDhcp()
+
+    const tocLinks = [...document.querySelectorAll('#toc a')]
+    const sections = tocLinks.map((a) => document.querySelector(a.getAttribute('href'))).filter(Boolean)
+    function spy() {
+      const y = window.scrollY + 120
+      let current = sections[0]
+      sections.forEach((section) => { if (section.offsetTop <= y) current = section })
+      tocLinks.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + current.id))
+    }
+    document.addEventListener('scroll', spy, { passive: true })
+    spy()
+
+    document.getElementById('open-nav').addEventListener('click', () => {
+      document.getElementById('rail').classList.toggle('open')
+    })
+    document.getElementById('toc').addEventListener('click', (event) => {
+      if (event.target.closest('a')) document.getElementById('rail').classList.remove('open')
+    })
+
+    setMode(localStorage.getItem('ciwa-guide-mode') || 'internal')
+  </script>
+</body>
+</html>

@@ -4,7 +4,10 @@ import {
   assertHost,
   assertNoControl,
   assertSectionId,
+  normalizeMac,
 } from './confSafe.js'
+
+const PHONE_TYPES = ['webrtc', 'sip', 'cisco-7942', 'cisco-7962']
 
 export function normalizeCollectionItem(key, item) {
   const next = { ...item }
@@ -43,6 +46,13 @@ export function validateCollectionItem(key, item) {
   if (key === 'extensions') {
     next.number = assertExtensionNumber(next.number, 'شماره داخلی')
     next.id = next.number
+    next.phoneType = PHONE_TYPES.includes(next.phoneType) ? next.phoneType : 'webrtc'
+    next.webrtc = next.phoneType === 'webrtc'
+    if (String(next.phoneType).startsWith('cisco')) {
+      next.mac = normalizeMac(next.mac)
+    } else {
+      delete next.mac
+    }
   } else if (key === 'trunks') {
     next.id = assertSectionId(next.id, 'شناسه ترانک')
     next.host = assertHost(next.host, 'میزبان ترانک')

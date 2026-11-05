@@ -214,7 +214,7 @@
         <a href="#softphone"><small>۱۶</small>سافت‌فون</a>
         <a href="#firewall"><small>۱۷</small>فایروال سرور</a>
         <a href="#mikrotik"><small>۱۸</small>فایروال میکروتیک</a>
-        <a href="#keep"><small>۱۹</small>بعد از نصب</a>
+        <a href="#keep"><small>۱۹</small>ماندگاری بعد از برق</a>
         <a href="#fix"><small>۲۰</small>اگر کار نکرد</a>
         <a href="#done"><small>۲۱</small>تحویل</a>
       </nav>
@@ -231,6 +231,7 @@
           <span class="chip">سیستم‌عامل: Debian 12 یا Ubuntu 24.04</span>
           <span class="chip">پنل: پورت 8080</span>
           <span class="chip">تلفن: SIP و Cisco 7942 / 7962</span>
+          <a class="chip" href="mikrotik.html">راهنمای کانفیگ میکروتیک</a>
         </div>
         <div class="paths">
           <button class="path on" type="button" data-pick="internal">
@@ -613,6 +614,7 @@ sudo iptables -I DOCKER-USER -i eth0 -p tcp --dport 8080 -j DROP</code></pre></d
 
       <section id="mikrotik">
         <h2><span class="num">۱۸</span>فایروال میکروتیک</h2>
+        <p>خلاصه همین‌جاست. راهنمای کامل جداگانه: <a href="mikrotik.html">docs/mikrotik.html</a></p>
         <p>اول SIP ALG را خاموش کنید. اگر روشن بماند زنگ می‌خورد و صدا خراب می‌شود.</p>
         <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall service-port
 set sip disabled=yes</code></pre></div>
@@ -653,12 +655,39 @@ add chain=forward action=drop connection-state=new protocol=udp dst-address=192.
 
       <section id="keep">
         <h2><span class="num">۱۹</span>بعد از بالا آمدن</h2>
-        <h3>سرویس‌هایی که باید بعد از برق ماندگار باشند</h3>
-        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo systemctl enable docker
-docker update --restart unless-stopped ciwa-asterisk
-cd /opt/ciwa && docker compose up -d
-sudo systemctl enable ciwa-tftp</code></pre></div>
-        <p class="quiet">اگر سیسکو ندارید، واحد TFTP را enable نکنید.</p>
+        <h3>ماندگاری بعد از قطع برق (اجباری برای فروش/تحویل)</h3>
+        <p>اگر پروژه روی دیسک جدا یا NTFS باشد، لینوکس بعد از ری‌استارت ممکن است همان دیسک را با اسمی مثل <code>ntfs11</code> یا <code>ntfs12</code> mount کند. Docker زودتر بالا می‌آید، مسیر قبلی را خالی می‌بیند و AMI قطع می‌شود. این سه دستور را <b>یک‌بار</b> بعد از نصب موفق بزنید.</p>
+        <p>اول Docker را برای بوت فعال کنید، بعد مسیر ثابت دیسک و سرویس بوت را نصب کنید:</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo systemctl enable --now docker
+cd /opt/ciwa
+# اگر پروژه جای دیگری است، همان مسیر واقعی را بگیرید؛ مثلاً:
+# cd /media/hossein/ntfs12/my-projects/telecom
+
+sudo ./scripts/install/install-stable-mount.sh
+sudo ./scripts/install/install-boot-services.sh</code></pre></div>
+        <div class="note">
+          <code>install-stable-mount.sh</code> دیسک پروژه را روی مسیر ثابت <code>/media/ciwa</code> می‌بندد تا دیگر وابسته به اسم <code>ntfsN</code> نباشد.
+          <code>install-boot-services.sh</code> سرویس سیستمی <code>ciwa</code> را نصب می‌کند تا بعد از برق، Asterisk + پنل + TFTP با هم بالا بیایند.
+        </div>
+        <p>اگر فعلاً sudo ندارید، حداقل سرویس کاربری و نگهبان AMI را نصب کنید:</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>cd /opt/ciwa
+./scripts/install/install-user-boot.sh
+loginctl enable-linger "$USER"
+systemctl --user status ciwa
+systemctl --user status ciwa-watchdog.timer</code></pre></div>
+        <p class="quiet">نگهبان هر ۲ دقیقه AMI را چک می‌کند؛ اگر قطع باشد دوباره بوت را اجرا می‌کند. برای تحویل مشتری، حتماً دو دستور sudo بالا را هم بزنید.</p>
+        <p>وضعیت و لاگ بعد از ری‌استارت:</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>systemctl status ciwa
+journalctl -u ciwa -e
+# یا اگر فقط سرویس کاربری نصب شده:
+systemctl --user status ciwa
+journalctl --user -u ciwa -e
+ss -lnt | grep 5038</code></pre></div>
+        <div class="warn">Asterisk را با <code>docker update --restart unless-stopped ciwa-asterisk</code> روی auto-restart نگذارید. استارت Asterisk باید مال سرویس <code>ciwa</code> باشد تا قبل از آماده شدن دیسک، با مسیر خراب بالا نیاید.</div>
+        <h3>TFTP سیسکو بعد از بوت</h3>
+        <p>اگر واحد systemd جدا برای TFTP ساخته‌اید:</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>sudo systemctl enable --now ciwa-tftp</code></pre></div>
+        <p class="quiet">در نصب Docker Compose، سرویس <code>tftp</code> داخل compose هم هست و با بوت <code>ciwa</code> بالا می‌آید. اگر سیسکو ندارید لازم نیست.</p>
         <h3>دیدن ثبت گوشی</h3>
         <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>docker exec -e LD_LIBRARY_PATH=/opt/ciwa-asterisk/lib ciwa-asterisk \
   /opt/ciwa-asterisk/sbin/asterisk -C /etc/asterisk/asterisk.conf \
@@ -683,7 +712,7 @@ sudo systemctl enable ciwa-tftp</code></pre></div>
           <tbody>
             <tr><td>صفحه 8080 باز نمی‌شود</td><td><code>docker compose ps</code> را ببینید. سرویس web باید running باشد. از خود سرور <code>curl -I http://127.0.0.1:8080</code> را بزنید. اگر این‌جا باز شد و از کامپیوتر دیگر نه، فایروال یا VLAN جلوی TCP 8080 را گرفته.</td></tr>
             <tr><td>رمز admin قبول نمی‌شود</td><td>اگر قبلاً عوض شده، رمز جدید را بزنید. فایل تازه‌ای ساخته نمی‌شود که رمز را به admin برگرداند.</td></tr>
-            <tr><td>وضعیت هسته به AMI وصل نیست</td><td><code>AMI_SECRET</code> در <code>.env</code> باید با رمز AMI در پنل یکی باشد. بعد <code>docker compose restart api</code> و <code>docker restart ciwa-asterisk</code>.</td></tr>
+            <tr><td>وضعیت هسته به AMI وصل نیست</td><td>اول <code>ss -lnt | grep 5038</code> را ببینید. اگر پورت نیست، <code>sudo systemctl restart ciwa</code> یا <code>systemctl --user restart ciwa</code> را بزنید. اگر بعد از هر ری‌استارت تکرار می‌شود، فصل ۱۹ را دوباره اجرا کنید (<code>install-stable-mount.sh</code>). رمز <code>AMI_SECRET</code> در <code>.env</code> باید با پنل یکی باشد.</td></tr>
             <tr><td>گوشی Register نمی‌شود</td><td>IP سرور، پورت 5060، UDP، نام کاربری برابر شماره داخلی، و رمز SIP. در میکروتیک SIP ALG خاموش باشد.</td></tr>
             <tr><td>زنگ هست، صدا نیست</td><td>UDP از 10000 تا 20000 در هر دو جهت باز باشد. IP خارجی در مسیر داخلی خالی باشد. در مسیر شهری hairpin و dst-nat صدا وجود داشته باشد.</td></tr>
             <tr><td>سیسکو بالا نمی‌آید</td><td><code>ss</code> پورت 69 را نشان بدهد. گزینه 150 همان IP سرور باشد. فایل <code>SEP</code> قبل از ریست وجود داشته باشد. در لاگ TFTP اسم فایل درخواستی را با محتوای پوشه <code>tftp</code> مقایسه کنید.</td></tr>
@@ -716,6 +745,7 @@ sudo ss -lntup | grep -E ':5060|:8080|:8089|:5038|:69'</code></pre></div>
           <li><input type="checkbox" id="c12"><label for="c12">پورت 5038 در میکروتیک قانون accept ندارد.</label></li>
           <li><input type="checkbox" id="c13"><label for="c13">اگر سیسکو هست: TFTP بالا است، گزینه 150 درست است، و فایل SEP قبل از ریست ساخته شده.</label></li>
           <li><input type="checkbox" id="c14"><label for="c14">یک نسخه پشتیبان از /opt/ciwa گرفته شده.</label></li>
+          <li><input type="checkbox" id="c15"><label for="c15">install-stable-mount و install-boot-services اجرا شده و بعد از یک ری‌استارت آزمایشی، AMI روی 5038 بالا است.</label></li>
         </ul>
       </section>
 

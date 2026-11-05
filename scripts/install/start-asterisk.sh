@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 # Run the built Asterisk binary inside a container with matching libs.
+# IMPORTANT: restart policy is "no". Docker must NOT auto-start this after reboot
+# while the data disk is still missing (NTFS remounts as ntfsN). ciwa-boot.sh
+# is responsible for starting Asterisk once the project path is real.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -12,8 +15,22 @@ SPOOL="$REPO/runtime/asterisk-var/spool"
 RUNDIR="$REPO/runtime/asterisk-var/run"
 LOGDIR="$REPO/logs/asterisk"
 
+# After power loss the NTFS volume can appear a few seconds after Docker starts.
+for _ in $(seq 1 90); do
+  if [[ -x "$PREFIX/sbin/asterisk" ]]; then
+    break
+  fi
+  sleep 1
+done
 if [[ ! -x "$PREFIX/sbin/asterisk" ]]; then
-  echo "Missing $PREFIX/sbin/asterisk — run scripts/install/build-asterisk-docker.sh first" >&2
+  echo "Missing $PREFIX/sbin/asterisk — disk not mounted or build missing (scripts/install/build-asterisk-docker.sh)" >&2
+  exit 1
+fi
+
+# Refuse to start against an empty stub directory created by Docker on the root fs.
+size="$(du -sb "$PREFIX" 2>/dev/null | awk '{print $1}')"
+if [[ -z "$size" || "$size" -lt 1000000 ]]; then
+  echo "Asterisk prefix looks empty ($PREFIX size=${size:-0}). Wrong mount point?" >&2
   exit 1
 fi
 
@@ -34,12 +51,12 @@ if docker ps -a --format '{{.Names}}' | grep -qx "$NAME"; then
   docker rm -f "$NAME" >/dev/null
 fi
 
-echo "==> starting $NAME as ${HOST_UID}:${HOST_GID}"
+echo "==> starting $NAME as ${HOST_UID}:${HOST_GID} (restart=no; boot script owns lifecycle)"
 docker run -d \
   --name "$NAME" \
   --network host \
   --user "${HOST_UID}:${HOST_GID}" \
-  --restart unless-stopped \
+  --restart no \
   -e LD_LIBRARY_PATH=/opt/ciwa-asterisk/lib \
   -v "$PREFIX:/opt/ciwa-asterisk:ro" \
   -v "$CONF_DIR:/etc/asterisk:rw" \
@@ -62,4 +79,4 @@ fi
 docker exec -e LD_LIBRARY_PATH=/opt/ciwa-asterisk/lib "$NAME" \
   /opt/ciwa-asterisk/sbin/asterisk -C /etc/asterisk/asterisk.conf -rx "core show version"
 
-echo "==> $NAME is running (AMI 127.0.0.1:5038)"
+echo "==> $NAME is running (AMI 0.0.0.0:5038)"

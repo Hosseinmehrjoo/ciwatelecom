@@ -71,8 +71,19 @@ function ipv4Permit(address, prefix) {
 
 function buildManager(pbx) {
   const extraPermits = dockerAmiPermits().filter(Boolean)
-  const bind = extraPermits.length ? '0.0.0.0' : confIdent(pbx.ami.bindIp) || '127.0.0.1'
-  const permits = ['127.0.0.1/255.255.255.255', ...extraPermits]
+  // API runs in Docker and reaches the host via host.docker.internal (often 172.17.0.1).
+  // Always bind on all interfaces and allow loopback + common Docker bridges.
+  const dockerBridges = [
+    '172.16.0.0/255.240.0.0',
+    '192.168.0.0/255.255.0.0',
+    '10.0.0.0/255.0.0.0',
+  ]
+  const bind = '0.0.0.0'
+  const permits = [...new Set([
+    '127.0.0.1/255.255.255.255',
+    ...extraPermits,
+    ...dockerBridges,
+  ])]
   const user = confIdent(pbx.ami.username) || 'ciwa'
   const secret = confText(pbx.ami.secret).replace(/[^\x20-\x7E]/g, '')
   return `${header('AMI')}

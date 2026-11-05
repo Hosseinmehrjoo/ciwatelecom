@@ -9,7 +9,11 @@
       "secret": "101",
       "id": "101",
       "updatedAt": "2026-10-01T21:11:11.857Z",
-      "createdAt": "2026-10-01T21:11:11.857Z"
+      "createdAt": "2026-10-01T21:11:11.857Z",
+      "phoneType": "cisco-7962",
+      "mac": "ECC88211FC8B",
+      "phoneIp": "192.168.1.107",
+      "webrtc": false
     },
     {
       "ringTimeout": 30,
@@ -46,8 +50,12 @@
     "externalIp": "",
     "localNets": [
       "192.168.0.0/16",
-      "10.0.0.0/8"
-    ]
+      "10.0.0.0/8",
+      "192.168.1.0/24"
+    ],
+    "provisionHost": "192.168.1.104",
+    "ciscoLoad": "SIP42.8-5-3S",
+    "ciscoPhoneLabel": "telecom.aisis.ir"
   },
   "ami": {
     "enabled": true,

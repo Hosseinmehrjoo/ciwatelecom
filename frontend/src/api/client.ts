@@ -169,4 +169,50 @@ export const api = {
   addFirewallRule: (body: Record<string, unknown>) => request('/api/system/firewall/rules', { method: 'POST', body: JSON.stringify(body) }),
   removeFirewallRule: (id: string) => request(`/api/system/firewall/rules/${id}`, { method: 'DELETE' }),
   applyFirewall: () => request<{ ok: boolean; note?: string; stderr?: string; stdout?: string }>('/api/system/firewall/apply', { method: 'POST' }),
+
+  discoverPhones: (subnet?: string) => request<{
+    subnet: string
+    scanned: number
+    count: number
+    phones: Array<{
+      ip: string
+      mac?: string | null
+      model?: string | null
+      phoneType?: string
+      source?: string
+      httpOpen?: boolean
+    }>
+    localAddresses: string[]
+  }>('/api/phones/discover', {
+    method: 'POST',
+    body: JSON.stringify(subnet ? { subnet } : {}),
+  }),
+  inspectPhone: (ip: string) => request<any>('/api/phones/inspect', {
+    method: 'POST',
+    body: JSON.stringify({ ip }),
+  }),
+  autoConfigPhone: (body: {
+    ip: string
+    number: string
+    mac?: string
+    phoneType?: string
+    name?: string
+  }) => request<{
+    ok: boolean
+    message: string
+    extension: any
+    phone: { ip: string; mac: string; phoneType: string; model: string }
+    provisionHost: string
+    phoneLabel?: string
+    sepFile: string
+    sepReady: boolean
+    dialplanReady: boolean
+    tftp: any
+    restartRequired: boolean
+  }>('/api/phones/autoconfig', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  }),
+  phoneTftpStatus: () => request<any>('/api/phones/tftp'),
+  startPhoneTftp: () => request<any>('/api/phones/tftp/start', { method: 'POST' }),
 }

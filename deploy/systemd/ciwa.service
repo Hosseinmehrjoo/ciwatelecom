@@ -1,0 +1,22 @@
+[Unit]
+Description=CIWA Telecom stack (Asterisk + panel + TFTP)
+After=network-online.target docker.service local-fs.target
+Wants=network-online.target
+Requires=docker.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment=CIWA_STATE_DIR=/etc/ciwa
+Environment=CIWA_BOOT_WAIT_SECONDS=480
+Environment=CIWA_BOOT_POLL_SECONDS=3
+EnvironmentFile=-/etc/ciwa/env
+ExecStart=/usr/local/lib/ciwa/ciwa-boot.sh
+ExecStop=/bin/bash -c 'HOME_DIR="$(cat /etc/ciwa/home 2>/dev/null || true)"; if [[ -n "$HOME_DIR" ]]; then docker compose -f "$HOME_DIR/docker-compose.yml" --project-directory "$HOME_DIR" stop || true; fi; docker stop ciwa-asterisk >/dev/null 2>&1 || true'
+TimeoutStartSec=900
+Restart=on-failure
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target

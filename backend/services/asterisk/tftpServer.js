@@ -103,6 +103,7 @@ export function startTftpServer({ root, port = 69, host = '0.0.0.0' } = {}) {
       if (previous?.timer) clearTimeout(previous.timer)
       const request = parseRrq(message)
       const full = request ? safeFile(root, request.filename) : null
+      console.log(`[tftp] RRQ from ${rinfo.address}:${rinfo.port} file=${request?.filename || '?'} ${full ? 'OK' : 'MISSING'}`)
       if (!full) {
         send(errorPacket('File not found'), rinfo)
         return

@@ -81,6 +81,7 @@ export function methodRole(req) {
   if (path.startsWith('/api/auth/users') || path.startsWith('/api/audit')) return 'admin'
   if (path.startsWith('/api/settings/') || path.startsWith('/api/system/')) return 'admin'
   if (path.startsWith('/api/calls/') || path.startsWith('/api/configs/')) return 'operator'
+  if (path.startsWith('/api/phones')) return 'operator'
   if (path.startsWith('/api/campaigns') || path.startsWith('/api/exports/')) return 'operator'
   if (path.startsWith('/api/queues/member/')) return 'operator'
   if (req.method === 'GET' || req.method === 'HEAD') return 'viewer'

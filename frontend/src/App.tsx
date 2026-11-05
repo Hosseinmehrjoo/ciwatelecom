@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   Activity, Clock, Headphones, LayoutDashboard, Layers, LifeBuoy, Menu, Mic2, Moon, Network,
-  Megaphone, Phone, PhoneCall, PhoneIncoming, PhoneOutgoing, Radio, Server, Settings, Shield, Sun, Users, X,
+  Megaphone, Phone, PhoneCall, PhoneIncoming, PhoneOutgoing, Radio, Search, Server, Settings, Shield, Sun, Users, X,
 } from 'lucide-react'
 import { useTheme } from './theme/useTheme'
 import { DashboardView } from './views/DashboardView'
@@ -13,6 +13,7 @@ import {
 } from './views/ResourceViews'
 import { CallsView, QueueMonitorView, SoftphoneView } from './views/OperativeViews'
 import { PromotionalCallsView } from './views/PromotionalCallsView'
+import { AutoConfigView } from './views/AutoConfigView'
 import {
   AdminView,   AmiSettingsView, DatabaseSettingsView, FirewallView, NetworkView, SettingsView, SipSettingsView, StatusView,
 } from './views/SystemViews'
@@ -20,6 +21,7 @@ import {
 const navItems = [
   { id: 'dashboard', label: 'داشبورد', icon: LayoutDashboard, group: 'main' },
   { id: 'extensions', label: 'داخلی‌ها', icon: Phone, group: 'pbx' },
+  { id: 'auto-config', label: 'کانفیگ خودکار', icon: Search, group: 'pbx' },
   { id: 'trunks', label: 'ترانک‌ها', icon: Radio, group: 'pbx' },
   { id: 'inbound-routes', label: 'مسیر ورودی', icon: PhoneIncoming, group: 'pbx' },
   { id: 'outbound-routes', label: 'مسیر خروجی', icon: PhoneOutgoing, group: 'pbx' },
@@ -219,6 +221,7 @@ export default function App() {
         <div className="flex-1 min-w-0 p-3 sm:p-5 flex flex-col gap-5 overflow-y-auto">
           {section === 'dashboard' && <DashboardView onOpen={(id) => openSection(id as Section)} />}
           {section === 'extensions' && <ResourceView catalogKey="extensions" />}
+          {section === 'auto-config' && <AutoConfigView />}
           {section === 'trunks' && <ResourceView catalogKey="trunks" />}
           {section === 'inbound-routes' && <ResourceView catalogKey="inbound-routes" />}
           {section === 'outbound-routes' && <ResourceView catalogKey="outbound-routes" />}

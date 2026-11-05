@@ -28,7 +28,11 @@ services:
       CIWA_ENV: production
       CIWA_TRUST_PROXY: '1'
       CIWA_DATABASE_URL: postgres://${CIWA_DB_USER:-ciwa}:${CIWA_DB_PASSWORD:-changeme}@postgres:5432/${CIWA_DB_NAME:-ciwa_telecom}
-      AMI_HOST: ${AMI_HOST:-host.docker.internal}
+      # Always reach Asterisk on the host. .env may say 127.0.0.1; rewrite inside the API container.
+      AMI_HOST: host.docker.internal
+      CIWA_AMI_DOCKER_HOST: host.docker.internal
+      CIWA_PROVISION_HOST: ${CIWA_PROVISION_HOST:-}
+      CIWA_PHONE_LABEL: ${CIWA_PHONE_LABEL:-telecom.aisis.ir}
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     volumes:
@@ -53,6 +57,17 @@ services:
       - '${CIWA_HTTP_PORT:-8080}:80'
     depends_on:
       - api
+
+  # Cisco phones need UDP/69 on the LAN. Host networking binds the real server port.
+  tftp:
+    image: node:22-bookworm-slim
+    restart: unless-stopped
+    network_mode: host
+    working_dir: /app
+    command: ['node', 'backend/services/asterisk/tftpServer.js', '/app/tftp', '69']
+    volumes:
+      - ./backend:/app/backend:ro
+      - ./tftp:/app/tftp
 
 volumes:
   ciwa_pg_data:

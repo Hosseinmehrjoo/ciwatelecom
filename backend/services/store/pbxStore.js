@@ -25,8 +25,9 @@ export const emptyPbx = () => ({
     rtpEnd: 20000,
     externalIp: '',
     provisionHost: '',
-    ciscoLoad: 'SIP42.9-4-2SR3-1S',
-    localNets: ['192.168.0.0/16', '10.0.0.0/8'],
+    ciscoPhoneLabel: 'telecom.aisis.ir',
+    ciscoLoad: 'SIP42.8-5-3S',
+    localNets: ['192.168.0.0/16', '10.0.0.0/8', '192.168.1.0/24'],
   },
   ami: {
     enabled: true,

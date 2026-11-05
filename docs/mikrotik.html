@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>راهنمای کانفیگ میکروتیک · CIWA Telecom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #17211c;
+      --muted: #5e675f;
+      --line: #e3ddd2;
+      --paper: #f3f0e8;
+      --card: #fffcf7;
+      --rail: #10241c;
+      --rail-text: #d7e4dc;
+      --accent: #0d6b4c;
+      --accent-soft: #e5f3ec;
+      --copper: #8a4e16;
+      --copper-soft: #f8efe3;
+      --rose: #7d2e2e;
+      --rose-soft: #f8e8e4;
+      --code: #14211b;
+      --shadow: 0 16px 40px rgba(28, 24, 16, 0.06);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(880px 380px at 100% -8%, #efe4d2 0%, transparent 58%),
+        var(--paper);
+      color: var(--ink);
+      font-family: Vazirmatn, Tahoma, sans-serif;
+      font-size: 16.5px;
+      line-height: 1.85;
+    }
+    a { color: var(--accent); }
+    button, input { font-family: inherit; }
+    .app { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+    .rail {
+      position: sticky; top: 0; height: 100vh; overflow: auto;
+      background: var(--rail); color: var(--rail-text); padding: 22px 16px 28px;
+    }
+    .brand { display: flex; gap: 12px; align-items: center; padding: 0 8px 18px; }
+    .mark {
+      width: 42px; height: 42px; border-radius: 14px;
+      background: linear-gradient(160deg, #1f8a62, #0c3d2c);
+      display: grid; place-items: center; color: white; font-weight: 700;
+    }
+    .brand strong { display: block; color: white; font-size: 15px; }
+    .brand span { color: #9bb3a8; font-size: 12px; }
+    .mode { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 8px 14px; }
+    .mode button {
+      border: 1px solid rgba(255,255,255,.12); background: transparent;
+      color: var(--rail-text); border-radius: 12px; padding: 8px; cursor: pointer; font-size: 12.5px;
+    }
+    .mode button.active { background: #1b3d30; color: white; border-color: #2f6a52; }
+    .rail nav a {
+      display: block; color: var(--rail-text); text-decoration: none;
+      font-size: 13.5px; padding: 7px 10px; border-radius: 10px;
+    }
+    .rail nav a:hover, .rail nav a.active { background: rgba(255,255,255,.06); color: white; }
+    .rail nav a small { display: inline-block; width: 1.6rem; color: #7f9c8e; }
+    .rail .docs-link {
+      display: block; margin: 14px 8px 0; padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,.12); border-radius: 12px;
+      color: #cfe4d8; text-decoration: none; font-size: 13px;
+    }
+    .main { width: min(980px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 80px; }
+    .hero { padding: 12px 0 26px; border-bottom: 1px solid var(--line); }
+    .eyebrow { margin: 0 0 8px; color: var(--accent); font-weight: 600; font-size: 13px; }
+    h1 { margin: 0; font-size: clamp(32px, 5vw, 48px); line-height: 1.25; letter-spacing: -0.03em; }
+    .lead { margin: 12px 0 0; max-width: 42rem; color: var(--muted); font-size: 18px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .chip { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+    .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
+    .path {
+      text-align: right; background: var(--card); border: 1px solid var(--line);
+      border-radius: 18px; padding: 16px; cursor: pointer; box-shadow: var(--shadow);
+    }
+    .path strong { display: block; font-size: 16px; }
+    .path span { color: var(--muted); font-size: 13.5px; }
+    .path.on { border-color: #9dccb8; background: #f3faf6; }
+    section {
+      margin-top: 22px; background: var(--card); border: 1px solid var(--line);
+      border-radius: 22px; padding: 26px 26px 20px; box-shadow: var(--shadow);
+    }
+    section h2 { margin: 0 0 8px; font-size: 24px; letter-spacing: -0.02em; }
+    h3 { margin: 18px 0 8px; font-size: 17px; }
+    .num { color: var(--accent); font-weight: 600; margin-left: 8px; }
+    p { margin: 0 0 12px; }
+    .quiet { color: var(--muted); }
+    ol.steps, ul.clean { margin: 0 0 8px; padding: 0 22px 0 0; }
+    ol.steps li, ul.clean li { margin: 0 0 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 14.5px; }
+    th, td { text-align: right; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; font-size: 12px; }
+    code, pre, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; }
+    code { background: #f3eee6; border-radius: 6px; padding: 1px 6px; }
+    .codebox { position: relative; margin: 10px 0 4px; }
+    pre {
+      direction: ltr; text-align: left; background: var(--code); color: #f3eee6;
+      border-radius: 16px; padding: 16px 18px 16px 72px; overflow: auto; line-height: 1.65; margin: 0;
+    }
+    pre code { background: none; color: inherit; padding: 0; }
+    .copy {
+      position: absolute; top: 10px; left: 10px; border: 0; border-radius: 999px;
+      background: #2a3b33; color: #efe8dc; padding: 4px 10px; cursor: pointer; font-size: 12px;
+    }
+    .note, .warn, .stop {
+      border-radius: 14px; padding: 12px 14px; margin: 12px 0; font-size: 14.5px;
+    }
+    .note { background: var(--accent-soft); color: #134838; }
+    .warn { background: var(--copper-soft); color: #6d4510; }
+    .stop { background: var(--rose-soft); color: var(--rose); }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tool {
+      display: grid; gap: 10px; background: #f7f3ec; border-radius: 16px; padding: 14px;
+    }
+    .tool label { font-size: 13px; color: var(--muted); display: grid; gap: 4px; }
+    .tool input {
+      border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px;
+      background: white; font-size: 14px;
+    }
+    .checks { list-style: none; margin: 0; padding: 0; }
+    .checks li {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 8px 0; border-bottom: 1px solid var(--line);
+    }
+    .checks input { margin-top: 7px; width: 16px; height: 16px; accent-color: var(--accent); }
+    .menu { display: none; }
+    footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
+    [hidden] { display: none !important; }
+    @media (max-width: 960px) {
+      .app { grid-template-columns: 1fr; }
+      .rail { position: fixed; z-index: 20; width: min(320px, 88vw); transform: translateX(110%); transition: .2s; }
+      .rail.open { transform: none; }
+      .menu {
+        display: inline-flex; position: sticky; top: 10px; z-index: 10;
+        margin: 10px 0; border: 1px solid var(--line); background: var(--card);
+        border-radius: 999px; padding: 8px 14px; cursor: pointer;
+      }
+      .paths, .grid2 { grid-template-columns: 1fr; }
+      section { padding: 20px 16px; }
+      pre { padding-left: 16px; padding-top: 42px; }
+    }
+    @media print {
+      .rail, .menu, .copy, .mode, .paths { display: none !important; }
+      .app { display: block; }
+      section { break-inside: avoid; box-shadow: none; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="rail" id="rail">
+      <div class="brand">
+        <div class="mark">C</div>
+        <div>
+          <strong>CIWA Telecom</strong>
+          <span>کانفیگ میکروتیک</span>
+        </div>
+      </div>
+      <div class="mode" role="group" aria-label="نوع نصب">
+        <button type="button" id="mode-internal" class="active">فقط داخلی</button>
+        <button type="button" id="mode-external">داخلی و شهری</button>
+      </div>
+      <nav id="toc">
+        <a href="#start"><small>۰۱</small>شروع</a>
+        <a href="#map"><small>۰۲</small>نقشه شبکه</a>
+        <a href="#ports"><small>۰۳</small>پورت‌ها</a>
+        <a href="#alg"><small>۰۴</small>خاموش کردن SIP ALG</a>
+        <a href="#lists"><small>۰۵</small>لیست آدرس‌ها</a>
+        <a href="#filter"><small>۰۶</small>فایروال داخلی</a>
+        <a href="#dhcp"><small>۰۷</small>DHCP و سیسکو</a>
+        <a href="#external" data-external><small>۰۸</small>خط شهری و NAT</a>
+        <a href="#forbid"><small>۰۹</small>چیزهایی که باز نکنید</a>
+        <a href="#check"><small>۱۰</small>آزمون</a>
+        <a href="#fix"><small>۱۱</small>اگر کار نکرد</a>
+        <a href="#done"><small>۱۲</small>تحویل</a>
+      </nav>
+      <a class="docs-link" href="index.html">← راهنمای نصب نرم‌افزار</a>
+    </aside>
+
+    <main class="main">
+      <button class="menu" type="button" id="open-nav">فهرست فصل‌ها</button>
+      <header class="hero" id="start">
+        <p class="eyebrow">RouterOS · فایروال · DHCP · NAT</p>
+        <h1>کانفیگ میکروتیک برای مرکز تلفن</h1>
+        <p class="lead">این صفحه فقط روتر را پوشش می‌دهد. فرض می‌کند CIWA روی سرور داخل شبکه نصب شده است. دستورها را در Terminal میکروتیک بزنید و آدرس‌های نمونه را با شبکه خودتان عوض کنید.</p>
+        <div class="chips">
+          <span class="chip">نمونه سرور: 192.168.88.10</span>
+          <span class="chip">نمونه LAN: 192.168.88.0/24</span>
+          <span class="chip">نمونه گیت‌وی: 192.168.88.1</span>
+          <span class="chip">پنل: 8080 یا 3000</span>
+        </div>
+        <div class="paths">
+          <button class="path on" type="button" data-pick="internal">
+            <strong>مسیر الف · فقط تماس داخلی</strong>
+            <span>SIP، RTP، TFTP و پنل فقط داخل شبکه. هیچ dst-nat به اینترنت نیست.</span>
+          </button>
+          <button class="path" type="button" data-pick="external">
+            <strong>مسیر ب · داخلی و خط شهری</strong>
+            <span>همان مسیر الف، به‌علاوه فوروارد SIP/RTP و hairpin برای صدا.</span>
+          </button>
+        </div>
+      </header>
+
+      <section id="map">
+        <h2><span class="num">۰۲</span>نقشه شبکه نمونه</h2>
+        <table>
+          <thead><tr><th>نقش</th><th>آدرس</th><th>توضیح</th></tr></thead>
+          <tbody>
+            <tr><td>میکروتیک (گیت‌وی)</td><td>192.168.88.1</td><td>DHCP و فایروال اینجا است.</td></tr>
+            <tr><td>سرور CIWA</td><td>192.168.88.10</td><td>آدرس ثابت. از استخر DHCP خارجش کنید یا رزرو بسازید.</td></tr>
+            <tr><td>گوشی‌ها</td><td>192.168.88.0/24</td><td>همان VLAN یا شبکه سرور، مگر جدا کرده باشید.</td></tr>
+            <tr><td>IP عمومی شرکت</td><td>1.2.3.4</td><td>فقط برای مسیر شهری. نمونه است.</td></tr>
+            <tr><td>سرور SIP مخابرات</td><td>203.0.113.10</td><td>فقط برای مسیر شهری. از قرارداد بگیرید.</td></tr>
+          </tbody>
+        </table>
+        <div class="warn">اگر پنل روی پورت 3000 بالا آمده (نصب توسعه)، در قانون‌های فایروال 3000 را به‌جای 8080 بگذارید. در نصب تولید معمولاً 8080 است.</div>
+      </section>
+
+      <section id="ports">
+        <h2><span class="num">۰۳</span>پورت‌هایی که میکروتیک باید بشناسد</h2>
+        <table>
+          <thead><tr><th>کاربرد</th><th>پروتکل</th><th>پورت</th><th>به اینترنت؟</th></tr></thead>
+          <tbody>
+            <tr><td>SIP گوشی و ترانک</td><td>UDP</td><td>5060</td><td>فقط در مسیر شهری، و ترجیحاً فقط از IP مخابرات</td></tr>
+            <tr><td>صدای تماس (RTP)</td><td>UDP</td><td>10000 تا 20000</td><td>فقط در مسیر شهری</td></tr>
+            <tr><td>TFTP سیسکو</td><td>UDP</td><td>69</td><td>هرگز</td></tr>
+            <tr><td>پنل مدیریت</td><td>TCP</td><td>8080 یا 3000</td><td>هرگز</td></tr>
+            <tr><td>سافت‌فون WebSocket</td><td>TCP</td><td>8089</td><td>هرگز</td></tr>
+            <tr><td>API</td><td>TCP</td><td>8788</td><td>هرگز</td></tr>
+            <tr><td>AMI</td><td>TCP</td><td>5038</td><td>هرگز</td></tr>
+          </tbody>
+        </table>
+        <div class="stop">پورت 5038 فقط برای خود سرور است. برایش در میکروتیک قانون accept نسازید و dst-nat هم نکنید.</div>
+      </section>
+
+      <section id="alg">
+        <h2><span class="num">۰۴</span>خاموش کردن SIP ALG</h2>
+        <p>اگر این سرویس روشن باشد، زنگ می‌خورد ولی صدا یک‌طرفه یا قطع می‌شود. همیشه اول این را بزنید.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall service-port
+set sip disabled=yes</code></pre></div>
+        <p class="quiet">وضعیت را با <code>/ip firewall service-port print where name=sip</code> چک کنید. باید Disabled باشد.</p>
+      </section>
+
+      <section id="lists">
+        <h2><span class="num">۰۵</span>لیست آدرس‌ها</h2>
+        <p>با لیست، قانون‌ها خوانا می‌مانند و وقتی VLAN اضافه می‌کنید فقط یک خط به لیست می‌زنید.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall address-list
+add list=ciwa-pbx address=192.168.88.10 comment="CIWA server"
+add list=ciwa-phones address=192.168.88.0/24 comment="IP phones"
+add list=ciwa-admins address=192.168.88.0/24 comment="panel users"</code></pre></div>
+        <div class="note">اگر شبکه تلفن جدا است، مثلاً 10.10.20.0/24، همان رنج را به <code>ciwa-phones</code> اضافه کنید. مدیران پنل را می‌توانید به چند IP محدود کنید.</div>
+      </section>
+
+      <section id="filter">
+        <h2><span class="num">۰۶</span>فایروال برای تماس داخلی</h2>
+        <p>این قانون‌ها را <b>بالاتر از drop عمومی</b> بگذارید. اگر اینترفیس اینترنت در لیست WAN نیست، به‌جای <code>in-interface-list=WAN</code> بنویسید <code>in-interface=ether1</code>.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall filter
+add chain=forward action=accept connection-state=established,related comment="ciwa established"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-phones dst-address-list=ciwa-pbx protocol=udp dst-port=69 comment="ciwa TFTP"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-phones dst-address-list=ciwa-pbx protocol=udp dst-port=5060 comment="ciwa SIP"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-pbx dst-address-list=ciwa-phones protocol=udp src-port=5060 comment="ciwa SIP reply"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-phones dst-address-list=ciwa-pbx protocol=udp dst-port=10000-20000 comment="ciwa RTP to server"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-pbx dst-address-list=ciwa-phones protocol=udp src-port=10000-20000 comment="ciwa RTP to phones"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-admins dst-address-list=ciwa-pbx protocol=tcp dst-port=8080 comment="ciwa panel"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-admins dst-address-list=ciwa-pbx protocol=tcp dst-port=3000 comment="ciwa panel alt"
+add chain=forward action=accept connection-state=new src-address-list=ciwa-admins dst-address-list=ciwa-pbx protocol=tcp dst-port=8089 comment="ciwa softphone"
+add chain=forward action=drop connection-state=new dst-address-list=ciwa-pbx protocol=udp dst-port=69,5060,10000-20000 in-interface-list=WAN comment="block phone ports from internet"
+add chain=forward action=drop connection-state=new dst-address-list=ciwa-pbx protocol=tcp dst-port=3000,8080,8089,8788,5038 in-interface-list=WAN comment="block panel AMI API from internet"</code></pre></div>
+        <div class="warn">برای مسیر الف هیچ dst-nat نسازید. تماس داخلی نباید از اینترنت رد شود.</div>
+      </section>
+
+      <section id="dhcp">
+        <h2><span class="num">۰۷</span>DHCP، آدرس ثابت سرور، گزینه 150 سیسکو</h2>
+        <h3>آدرس ثابت برای سرور</h3>
+        <p>یا سرور را از استخر DHCP خارج کنید، یا رزرو بسازید تا IP عوض نشود.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip dhcp-server lease
+add address=192.168.88.10 mac-address=AA:BB:CC:DD:EE:FF comment="CIWA server" server=defconf</code></pre></div>
+        <p class="quiet">مک سرور و نام DHCP server خودتان را جای نمونه بگذارید. نام سرور را با <code>/ip dhcp-server print</code> ببینید.</p>
+
+        <h3>گزینه 150 برای Cisco 7942 / 7962</h3>
+        <p>گوشی سیسکو آدرس TFTP را از گزینه 150 می‌گیرد. مقدارش چهار بایت هگز IP سرور است، نه متن.</p>
+        <div class="tool">
+          <label>آدرس سرور CIWA
+            <input id="lan-ip" value="192.168.88.10" inputmode="decimal" autocomplete="off">
+          </label>
+          <label>شبکه DHCP
+            <input id="lan-net" value="192.168.88.0/24" autocomplete="off">
+          </label>
+          <p id="opt150" class="mono" style="direction:ltr;text-align:left;margin:0"></p>
+        </div>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre id="mt-dhcp"><code></code></pre></div>
+        <div class="note">بعد از ساخت فایل <code>SEP&lt;MAC&gt;.cnf.xml</code> روی سرور، گوشی را یک‌بار ری‌استارت کنید تا TFTP را بخواند.</div>
+      </section>
+
+      <section id="external" data-external>
+        <h2><span class="num">۰۸</span>خط شهری · dst-nat و hairpin</h2>
+        <p>فقط وقتی ترانک SIP دارید این بخش را اجرا کنید. <code>1.2.3.4</code> را با IP عمومی ثابت شرکت و <code>203.0.113.10</code> را با IP سرور SIP مخابرات عوض کنید.</p>
+        <h3>فوروارد به سرور</h3>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall nat
+add chain=dstnat action=dst-nat protocol=udp dst-address=1.2.3.4 dst-port=5060 to-addresses=192.168.88.10 to-ports=5060 comment="ciwa SIP"
+add chain=dstnat action=dst-nat protocol=udp dst-address=1.2.3.4 dst-port=10000-20000 to-addresses=192.168.88.10 comment="ciwa RTP"</code></pre></div>
+        <h3>Hairpin برای تماس داخلی وقتی IP خارجی پر است</h3>
+        <p>اگر در پنل فیلد «IP خارجی» پر شده، گوشی‌های داخل شبکه هم صدا را به IP عمومی می‌فرستند. بدون این دو خط، تماس شهری کار می‌کند و تماس داخلی بی‌صدا می‌شود، یا برعکس.</p>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall nat
+add chain=srcnat action=masquerade protocol=udp src-address=192.168.88.0/24 dst-address=192.168.88.10 dst-port=5060 comment="ciwa hairpin SIP"
+add chain=srcnat action=masquerade protocol=udp src-address=192.168.88.0/24 dst-address=192.168.88.10 dst-port=10000-20000 comment="ciwa hairpin RTP"</code></pre></div>
+        <h3>فقط مخابرات به SIP برسد</h3>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall filter
+add chain=forward action=accept connection-state=new protocol=udp dst-address=192.168.88.10 dst-port=5060 src-address=203.0.113.10 comment="SIP only from provider"
+add chain=forward action=accept connection-state=new protocol=udp dst-address=192.168.88.10 dst-port=10000-20000 in-interface-list=WAN comment="RTP from calls"
+add chain=forward action=drop connection-state=new protocol=udp dst-address=192.168.88.10 dst-port=5060 in-interface-list=WAN comment="drop other internet SIP"</code></pre></div>
+        <div class="warn">قانون accept مخصوص فروشنده را بالاتر از drop عمومی SIP بگذارید. پنل، TFTP و AMI را فوروارد نکنید.</div>
+      </section>
+
+      <section id="forbid">
+        <h2><span class="num">۰۹</span>چیزهایی که عمداً باز نمی‌کنیم</h2>
+        <ul class="clean">
+          <li>TCP 5038 به هیچ کجا غیر از خود سرور</li>
+          <li>TCP 8788 از بیرون یا حتی از کل LAN اگر لازم نیست</li>
+          <li>UDP 69 از اینترنت</li>
+          <li>پنل (8080 / 3000) از اینترنت</li>
+          <li>Winbox و SSH روتر از اینترنت بدون محدودیت</li>
+        </ul>
+        <div class="stop">باز بودن SIP روی کل اینترنت یعنی حمله و تماس‌های جعلی. اگر خط شهری دارید، منبع را به IP مخابرات محدود کنید.</div>
+      </section>
+
+      <section id="check">
+        <h2><span class="num">۱۰</span>آزمون سریع</h2>
+        <ol class="steps">
+          <li>از یک کامپیوتر داخل شبکه پنل را باز کنید: <code>http://192.168.88.10:8080</code> یا پورت 3000.</li>
+          <li>از بیرون شبکه همان آدرس را امتحان کنید؛ نباید باز شود.</li>
+          <li>دو گوشی را Register کنید و از 101 به 102 زنگ بزنید. صدای دوطرفه لازم است.</li>
+          <li>اگر سیسکو دارید، در لاگ TFTP سرور درخواست <code>SEP...</code> را ببینید.</li>
+          <li data-external>از موبایل به DID شرکت زنگ بزنید و یک تماس خروجی با صفر اول بگیرید.</li>
+        </ol>
+      </section>
+
+      <section id="fix">
+        <h2><span class="num">۱۱</span>اگر کار نکرد</h2>
+        <table>
+          <thead><tr><th>نشانه</th><th>کار بعدی</th></tr></thead>
+          <tbody>
+            <tr><td>زنگ هست، صدا نیست</td><td>SIP ALG خاموش باشد. UDP 10000-20000 در هر دو جهت باز باشد. در مسیر شهری hairpin را چک کنید.</td></tr>
+            <tr><td>گوشی Register نمی‌شود</td><td>قانون SIP 5060، IP سرور ثابت، و عدم وجود dst-nat اشتباه برای مسیر داخلی.</td></tr>
+            <tr><td>سیسکو فایل نمی‌گیرد</td><td>گزینه 150، UDP 69، و روشن بودن سرویس TFTP روی سرور.</td></tr>
+            <tr><td>پنل از بیرون باز است</td><td>قانون drop روی WAN برای 8080/3000 را ببینید. ممکن است dst-nat جدا داشته باشید؛ حذفش کنید.</td></tr>
+            <tr><td>تماس شهری قطع است</td><td>dst-nat فقط به 192.168.88.10، و accept فقط از IP مخابرات بالاتر از drop.</td></tr>
+          </tbody>
+        </table>
+        <div class="codebox"><button class="copy" type="button">کپی</button><pre><code>/ip firewall service-port print where name=sip
+/ip firewall address-list print where list~"ciwa"
+/ip firewall filter print where comment~"ciwa"
+/ip firewall nat print where comment~"ciwa"
+/ip dhcp-server option print where name=ciwa-tftp</code></pre></div>
+      </section>
+
+      <section id="done">
+        <h2><span class="num">۱۲</span>چک‌لیست تحویل روتر</h2>
+        <ul class="checks" id="checks">
+          <li><input type="checkbox" id="m1"><label for="m1">SIP ALG خاموش است.</label></li>
+          <li><input type="checkbox" id="m2"><label for="m2">لیست‌های ciwa-pbx، ciwa-phones و ciwa-admins درست‌اند.</label></li>
+          <li><input type="checkbox" id="m3"><label for="m3">SIP، RTP، TFTP و پنل داخل LAN بازند.</label></li>
+          <li><input type="checkbox" id="m4"><label for="m4">از اینترنت به 69، 5038، 8788 و پنل دسترسی نیست.</label></li>
+          <li><input type="checkbox" id="m5"><label for="m5">آدرس سرور ثابت است یا DHCP lease دارد.</label></li>
+          <li><input type="checkbox" id="m6"><label for="m6">اگر سیسکو هست، گزینه 150 درست است.</label></li>
+          <li data-external><input type="checkbox" id="m7"><label for="m7">dst-nat و hairpin شهری تنظیم شده و SIP فقط از مخابرات پذیرفته می‌شود.</label></li>
+          <li><input type="checkbox" id="m8"><label for="m8">تماس داخلی با صدای دوطرفه تست شده است.</label></li>
+        </ul>
+      </section>
+
+      <footer>
+        CIWA Telecom · راهنمای میکروتیک در <span class="mono">docs/mikrotik.html</span>.
+        آدرس‌های نمونه را عوض کنید. نصب نرم‌افزار: <a href="index.html">docs/index.html</a>
+      </footer>
+    </main>
+  </div>
+  <script>
+    const modeInternal = document.getElementById('mode-internal')
+    const modeExternal = document.getElementById('mode-external')
+    const externalNodes = () => document.querySelectorAll('[data-external]')
+
+    function setMode(mode) {
+      const external = mode === 'external'
+      modeInternal.classList.toggle('active', !external)
+      modeExternal.classList.toggle('active', external)
+      document.querySelectorAll('[data-pick]').forEach((el) => el.classList.toggle('on', el.dataset.pick === mode))
+      externalNodes().forEach((el) => { el.hidden = !external })
+      localStorage.setItem('ciwa-mt-mode', mode)
+    }
+
+    document.querySelectorAll('[data-pick]').forEach((el) => {
+      el.addEventListener('click', () => setMode(el.dataset.pick))
+    })
+    modeInternal.addEventListener('click', () => setMode('internal'))
+    modeExternal.addEventListener('click', () => setMode('external'))
+
+    const checks = [...document.querySelectorAll('#checks input')]
+    checks.forEach((box) => {
+      const saved = localStorage.getItem('ciwa-mt-' + box.id)
+      if (saved === '1') box.checked = true
+      box.addEventListener('change', () => {
+        localStorage.setItem('ciwa-mt-' + box.id, box.checked ? '1' : '0')
+      })
+    })
+
+    document.querySelectorAll('.copy').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const code = button.parentElement.querySelector('code')
+        const text = code.innerText.replace(/\n$/, '')
+        try {
+          await navigator.clipboard.writeText(text)
+          button.textContent = 'کپی شد'
+        } catch {
+          button.textContent = 'دستی کپی کنید'
+        }
+        setTimeout(() => { button.textContent = 'کپی' }, 1400)
+      })
+    })
+
+    const lanIp = document.getElementById('lan-ip')
+    const lanNet = document.getElementById('lan-net')
+    const optOut = document.getElementById('opt150')
+    const dhcpCode = document.querySelector('#mt-dhcp code')
+    function refreshDhcp() {
+      const parts = lanIp.value.trim().split('.').map((n) => Number(n))
+      const ok = parts.length === 4 && parts.every((n) => Number.isInteger(n) && n >= 0 && n <= 255)
+      const hex = ok ? '0x' + parts.map((n) => n.toString(16).padStart(2, '0')).join('').toUpperCase() : 'آدرس کامل نیست'
+      const net = lanNet.value.trim() || '192.168.88.0/24'
+      optOut.textContent = ok ? hex + '   ← گزینه 150 برای ' + lanIp.value.trim() : hex
+      dhcpCode.textContent = ok
+        ? '/ip dhcp-server option\nadd code=150 name=ciwa-tftp value=' + hex + '\n/ip dhcp-server network\nset [find address=' + net + '] dhcp-option=ciwa-tftp'
+        : 'اول یک IPv4 کامل بنویسید.'
+    }
+    lanIp.addEventListener('input', refreshDhcp)
+    lanNet.addEventListener('input', refreshDhcp)
+    refreshDhcp()
+
+    const tocLinks = [...document.querySelectorAll('#toc a')]
+    const sections = tocLinks.map((a) => document.querySelector(a.getAttribute('href'))).filter(Boolean)
+    function spy() {
+      const y = window.scrollY + 120
+      let current = sections[0]
+      sections.forEach((section) => { if (section && section.offsetTop <= y) current = section })
+      if (!current) return
+      tocLinks.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + current.id))
+    }
+    document.addEventListener('scroll', spy, { passive: true })
+    spy()
+
+    document.getElementById('open-nav').addEventListener('click', () => {
+      document.getElementById('rail').classList.toggle('open')
+    })
+    document.getElementById('toc').addEventListener('click', (event) => {
+      if (event.target.closest('a')) document.getElementById('rail').classList.remove('open')
+    })
+
+    setMode(localStorage.getItem('ciwa-mt-mode') || 'internal')
+  </script>
+</body>
+</html>

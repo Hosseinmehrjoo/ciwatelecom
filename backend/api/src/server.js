@@ -67,6 +67,9 @@ import { applyEnvDatabaseBootstrap } from '../../services/store/databaseConfig.j
 import { initDatastore } from '../../services/store/documentStore.js'
 import { initSessions } from '../../services/auth/sessions.js'
 import { registerCampaignRoutes } from '../../services/campaign/campaignApi.js'
+import { discoverPhones, inspectPhone } from '../../services/asterisk/phoneDiscovery.js'
+import { configureCiscoPhone } from '../../services/asterisk/autoConfig.js'
+import { ensureTftpServer, getTftpStatus } from '../../services/asterisk/tftpManager.js'
 
 const app = express()
 const port = Number(process.env.CIWA_API_PORT || 8788)
@@ -272,6 +275,36 @@ app.post('/api/configs/regenerate', asyncHandler(async (req, res) => {
   const generated = await regenerateConfigs()
   audit(req, 'config.regenerate')
   res.json(generated)
+}))
+
+app.post('/api/phones/discover', asyncHandler(async (req, res) => {
+  const result = await discoverPhones({ subnet: req.body?.subnet })
+  audit(req, 'phones.discover', { subnet: result.subnet, count: result.count })
+  res.json(result)
+}))
+
+app.post('/api/phones/inspect', asyncHandler(async (req, res) => {
+  res.json(await inspectPhone(req.body?.ip))
+}))
+
+app.post('/api/phones/autoconfig', asyncHandler(async (req, res) => {
+  const result = await configureCiscoPhone(req.body || {})
+  audit(req, 'phones.autoconfig', {
+    ip: result.phone?.ip,
+    number: result.extension?.number,
+    mac: result.phone?.mac,
+  })
+  res.json(result)
+}))
+
+app.get('/api/phones/tftp', asyncHandler(async (_req, res) => {
+  res.json(getTftpStatus())
+}))
+
+app.post('/api/phones/tftp/start', asyncHandler(async (req, res) => {
+  const result = await ensureTftpServer()
+  audit(req, 'phones.tftp_start', { port: result.port })
+  res.json(result)
 }))
 
 app.get('/api/settings/sip', asyncHandler(async (_req, res) => {
